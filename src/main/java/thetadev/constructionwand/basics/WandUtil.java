@@ -21,15 +21,22 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import thetadev.constructionwand.ConstructionWand;
 import thetadev.constructionwand.containers.ContainerManager;
 import thetadev.constructionwand.items.wand.ItemWand;
 import thetadev.constructionwand.wand.WandItemUseContext;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class WandUtil
@@ -80,9 +87,33 @@ public class WandUtil
         return player.getInventory().items.subList(9, player.getInventory().items.size());
     }
 
+    public static List<ItemStack> getArmor(Player player) {
+        return player.getInventory().armor;
+    }
+
+	public static List<ItemStack> getCuriosInv(Player player) {
+        List<ItemStack> result = new ArrayList<>();
+		if (ModList.get().isLoaded("curios")) {
+            CuriosApi.getCuriosInventory(player).ifPresent(handler -> {
+                Map<String, ICurioStacksHandler> curios = handler.getCurios();
+                for (ICurioStacksHandler slotHandler : curios.values()) {
+                    for (int i = 0; i < slotHandler.getSlots(); i++) {
+                        ItemStack stack = slotHandler.getStacks().getStackInSlot(i);
+                        if (!stack.isEmpty()) {
+                            result.add(stack);
+                        }
+                    }
+                }
+            });
+		}
+		return result;
+	}
+
     public static List<ItemStack> getFullInv(Player player) {
         ArrayList<ItemStack> inventory = new ArrayList<>(player.getInventory().offhand);
         inventory.addAll(player.getInventory().items);
+        inventory.addAll(player.getInventory().armor);
+        inventory.addAll(getCuriosInv(player));
         return inventory;
     }
 

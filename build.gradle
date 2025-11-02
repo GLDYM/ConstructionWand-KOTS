@@ -1,13 +1,3 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
-}
-
 plugins {
     id 'eclipse'
     id 'idea'
@@ -122,25 +112,26 @@ repositories {
     maven {
         url = "https://maven.theillusivec4.top/"
     }
+    maven { 
+        url = 'https://cursemaven.com' 
+    }
+    maven {
+        name = "Illusive Soulworks maven"
+        url = "https://maven.theillusivec4.top/"
+    }
 }
 
 dependencies {
-    minecraft([
-            group  : "net.minecraftforge",
-            name   : "forge",
-            version: "${project.mcversion}-${project.forgeversion}"
-    ])
+    minecraft "net.minecraftforge:forge:${mcversion}-${forgeversion}"
 
     compileOnly fg.deobf("mezz.jei:jei-${mcversion}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mcversion}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${mcversion}-forge:${jei_version}")
 
-    compileOnly fg.deobf([
-            group: "vazkii.botania",
-            name: "Botania",
-            version: "${project.botania}",
-            classifier: "api"
-    ])
+    compileOnly fg.deobf("vazkii.botania:Botania:${botania}:api")
+    compileOnly fg.deobf("curse.maven:l2-backpack-620229:${l2backpack_fileid}")
+    compileOnly fg.deobf("curse.maven:l2library-620203:${l2library_fileid}")
+    compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api"))
 }
 
 jar {

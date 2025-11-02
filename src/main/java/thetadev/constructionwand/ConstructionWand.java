@@ -20,7 +20,9 @@ import thetadev.constructionwand.client.RenderBlockPreview;
 import thetadev.constructionwand.containers.ContainerManager;
 import thetadev.constructionwand.containers.ContainerRegistrar;
 import thetadev.constructionwand.items.ModItems;
+import thetadev.constructionwand.network.PacketPreviewResult;
 import thetadev.constructionwand.network.PacketQueryUndo;
+import thetadev.constructionwand.network.PacketRequestPreview;
 import thetadev.constructionwand.network.PacketUndoBlocks;
 import thetadev.constructionwand.network.PacketWandOption;
 import thetadev.constructionwand.wand.undo.UndoHistory;
@@ -68,7 +70,9 @@ public class ConstructionWand
         int packetIndex = 0;
         HANDLER.registerMessage(packetIndex++, PacketUndoBlocks.class, PacketUndoBlocks::encode, PacketUndoBlocks::decode, PacketUndoBlocks.Handler::handle);
         HANDLER.registerMessage(packetIndex++, PacketQueryUndo.class, PacketQueryUndo::encode, PacketQueryUndo::decode, PacketQueryUndo.Handler::handle);
-        HANDLER.registerMessage(packetIndex, PacketWandOption.class, PacketWandOption::encode, PacketWandOption::decode, PacketWandOption.Handler::handle);
+        HANDLER.registerMessage(packetIndex++, PacketWandOption.class, PacketWandOption::encode, PacketWandOption::decode, PacketWandOption.Handler::handle);
+        HANDLER.registerMessage(packetIndex++, PacketRequestPreview.class, PacketRequestPreview::encode, PacketRequestPreview::decode, PacketRequestPreview.Handler::handle);
+        HANDLER.registerMessage(packetIndex, PacketPreviewResult.class, PacketPreviewResult::encode, PacketPreviewResult::decode, PacketPreviewResult.Handler::handle);
 
         // Container registry
         ContainerRegistrar.register();

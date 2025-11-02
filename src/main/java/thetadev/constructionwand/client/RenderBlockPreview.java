@@ -16,14 +16,17 @@ import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import thetadev.constructionwand.basics.WandUtil;
 import thetadev.constructionwand.items.wand.ItemWand;
-import thetadev.constructionwand.wand.WandJob;
+import thetadev.constructionwand.network.PacketRequestPreview;
+import thetadev.constructionwand.ConstructionWand;
 
 import java.util.Set;
 
 public class RenderBlockPreview
 {
-    private WandJob wandJob;
+    private BlockHitResult lastRayTraceResult = null;
+    private ItemStack lastWand = ItemStack.EMPTY;
     public Set<BlockPos> undoBlocks;
+    public Set<BlockPos> previewBlocks;
 
     @SubscribeEvent
     public void renderBlockHighlight(RenderHighlightEvent.Block event) {
@@ -38,19 +41,21 @@ public class RenderBlockPreview
         ItemStack wand = WandUtil.holdingWand(player);
         if(wand == null) return;
 
-        if(!(player.isCrouching() && ClientEvents.isOptKeyDown())) {
+        if (player.isCrouching() || ClientEvents.isOptKeyDown()) {
+            blocks = undoBlocks;
+            colorG = 1;
+        }
+        else {
             // Use cached wandJob for previews of the same target pos/dir
             // Exception: always update if blockCount < 2 to prevent 1-block previews when block updates
             // from the last placement are lagging
-            if(wandJob == null || !compareRTR(wandJob.rayTraceResult, rtr) || !(wandJob.wand.equals(wand))
-                || wandJob.blockCount() < 2) {
-                wandJob = ItemWand.getWandJob(player, player.level(), rtr, wand);
+            if(lastRayTraceResult == null || !compareRTR(lastRayTraceResult, rtr) || lastWand.equals(wand)
+                || previewBlocks.size() < 2) {
+                lastRayTraceResult = rtr;
+                lastWand = wand;
+                ConstructionWand.instance.HANDLER.sendToServer(new PacketRequestPreview(rtr, wand));
             }
-            blocks = wandJob.getBlockPositions();
-        }
-        else {
-            blocks = undoBlocks;
-            colorG = 1;
+            blocks = previewBlocks;
         }
 
         if(blocks == null || blocks.isEmpty()) return;
@@ -73,7 +78,9 @@ public class RenderBlockPreview
     }
 
     public void reset() {
-        wandJob = null;
+        lastRayTraceResult = null;
+        lastWand = ItemStack.EMPTY;
+        previewBlocks = null;
     }
 
     private static boolean compareRTR(BlockHitResult rtr1, BlockHitResult rtr2) {

@@ -5,6 +5,7 @@ import thetadev.constructionwand.ConstructionWand;
 import thetadev.constructionwand.containers.handlers.HandlerBotania;
 import thetadev.constructionwand.containers.handlers.HandlerBundle;
 import thetadev.constructionwand.containers.handlers.HandlerCapability;
+import thetadev.constructionwand.containers.handlers.HandlerLightland;
 import thetadev.constructionwand.containers.handlers.HandlerShulkerbox;
 
 public class ContainerRegistrar
@@ -17,6 +18,15 @@ public class ContainerRegistrar
         if(ModList.get().isLoaded("botania")) {
             ConstructionWand.instance.containerManager.register(new HandlerBotania());
             ConstructionWand.LOGGER.info("Botania integration added");
+        }
+
+        if(ModList.get().isLoaded("l2backpack")) {
+            ConstructionWand.instance.containerManager.register(new HandlerLightland());
+            ConstructionWand.LOGGER.info("L2Backpack integration added");
+        }
+
+        if(ModList.get().isLoaded("curios")) {
+            ConstructionWand.LOGGER.info("Curios integration added");
         }
     }
 }

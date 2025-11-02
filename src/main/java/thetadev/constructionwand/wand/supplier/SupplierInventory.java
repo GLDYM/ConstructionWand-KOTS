@@ -110,6 +110,9 @@ public class SupplierInventory implements IWandSupplier
 
         List<ItemStack> hotbar = WandUtil.getHotbarWithOffhand(player);
         List<ItemStack> mainInv = WandUtil.getMainInv(player);
+        List<ItemStack> armor = WandUtil.getArmor(player);
+        List<ItemStack> curios = WandUtil.getCuriosInv(player);
+    
 
         // Take items from main inv, loose items first
         count = takeItemsInvList(count, item, mainInv, false);
@@ -118,6 +121,12 @@ public class SupplierInventory implements IWandSupplier
         // Take items from hotbar, containers first
         count = takeItemsInvList(count, item, hotbar, true);
         count = takeItemsInvList(count, item, hotbar, false);
+
+        count = takeItemsInvList(count, item, armor, true);
+        count = takeItemsInvList(count, item, armor, false);    
+
+        count = takeItemsInvList(count, item, curios, true);
+        count = takeItemsInvList(count, item, curios, false); 
 
         return count;
     }
