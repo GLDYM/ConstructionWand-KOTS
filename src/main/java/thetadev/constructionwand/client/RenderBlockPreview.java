@@ -41,7 +41,7 @@ public class RenderBlockPreview
         ItemStack wand = WandUtil.holdingWand(player);
         if(wand == null) return;
 
-        if (player.isCrouching() || ClientEvents.isOptKeyDown()) {
+        if (player.isCrouching() && ClientEvents.isOptKeyDown()) {
             blocks = undoBlocks;
             colorG = 1;
         }
