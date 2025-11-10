@@ -3,6 +3,7 @@ package thetadev.constructionwand.containers.handlers;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.MEStorage;
+import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,18 +59,31 @@ public class HandlerMENetworkAccess implements IContainerHandler {
     }
 
     private MEStorage getStorage(ServerPlayer player, ItemStack terminal) {
-        if (!(terminal.getItem() instanceof WirelessTerminalItem)) return null;
+        if (terminal.getItem() instanceof WirelessTerminalItem wireless) {
+            try {
+                WirelessTerminalMenuHost host = new WirelessTerminalMenuHost(
+                    player,
+                    null,
+                    terminal,
+                    (p, menu) -> {}
+                );
+            
+                if (!host.rangeCheck()) {
+                    player.displayClientMessage(PlayerMessages.OutOfRange.text(), true);
+                    return null;
+                }
 
-        try {
-            WirelessTerminalMenuHost host = new WirelessTerminalMenuHost(
-                player,
-                null,
-                terminal,
-                (p, menu) -> {}
-            );
-            return host.getInventory();
-        } catch (Exception e) {
-            return null;
+                double power = wireless.getAECurrentPower(terminal);
+                if (power <= 0) {
+                    player.displayClientMessage(PlayerMessages.DeviceNotPowered.text(), true);
+                    return null;
+                }
+
+                return host.getInventory();
+            } catch (Exception e) {
+                return null;
+            }
         }
+        return null;
     }
 }
