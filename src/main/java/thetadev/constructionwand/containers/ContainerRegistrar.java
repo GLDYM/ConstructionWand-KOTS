@@ -6,8 +6,10 @@ import thetadev.constructionwand.containers.handlers.HandlerBotania;
 import thetadev.constructionwand.containers.handlers.HandlerBundle;
 import thetadev.constructionwand.containers.handlers.HandlerCapability;
 import thetadev.constructionwand.containers.handlers.HandlerLightland;
-import thetadev.constructionwand.containers.handlers.HandlerMENetworkAccess;
+import thetadev.constructionwand.containers.handlers.HandlerPortableCell;
 import thetadev.constructionwand.containers.handlers.HandlerShulkerbox;
+import thetadev.constructionwand.containers.handlers.HandlerWirelessTerminal;
+
 
 public class ContainerRegistrar
 {
@@ -32,7 +34,8 @@ public class ContainerRegistrar
         }
 
         if(ModList.get().isLoaded("ae2")) {
-            ConstructionWand.instance.containerManager.register(new HandlerMENetworkAccess());
+            ConstructionWand.instance.containerManager.register(new HandlerPortableCell());
+            ConstructionWand.instance.containerManager.register(new HandlerWirelessTerminal());
             ConstructionWand.LOGGER.info("Applied Energistics 2 integration added");
         }
     }

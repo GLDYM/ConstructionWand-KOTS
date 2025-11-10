@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import thetadev.constructionwand.api.IContainerHandler;
 
-public class HandlerMENetworkAccess implements IContainerHandler {
+public class HandlerWirelessTerminal implements IContainerHandler {
 
     @Override
     public boolean matches(Player player, ItemStack itemStack, ItemStack stack) {
