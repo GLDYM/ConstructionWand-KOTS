@@ -106,6 +106,7 @@ sourceSets.main.resources {
 }
 
 repositories {
+    mavenCentral()
     maven {
         url = "https://maven.blamejared.com"
     }
@@ -132,7 +133,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:l2-backpack-620229:${l2backpack_fileid}")
     compileOnly fg.deobf("curse.maven:l2library-620203:${l2library_fileid}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-    compileOnly fg.deobf("org.appliedenergistics:appliedenergistics2:15.3.6")
+    compileOnly fg.deobf("curse.maven:applied-energistics-2-223794:${ae2_fileid}")
 }
 
 jar {

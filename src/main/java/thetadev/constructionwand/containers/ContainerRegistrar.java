@@ -6,6 +6,7 @@ import thetadev.constructionwand.containers.handlers.HandlerBotania;
 import thetadev.constructionwand.containers.handlers.HandlerBundle;
 import thetadev.constructionwand.containers.handlers.HandlerCapability;
 import thetadev.constructionwand.containers.handlers.HandlerLightland;
+import thetadev.constructionwand.containers.handlers.HandlerMENetworkAccess;
 import thetadev.constructionwand.containers.handlers.HandlerShulkerbox;
 
 public class ContainerRegistrar
@@ -28,6 +29,11 @@ public class ContainerRegistrar
 
         if(ModList.get().isLoaded("curios")) {
             ConstructionWand.LOGGER.info("Curios integration added");
+        }
+
+        if(ModList.get().isLoaded("ae2")) {
+            ConstructionWand.instance.containerManager.register(new HandlerMENetworkAccess());
+            ConstructionWand.LOGGER.info("Applied Energistics 2 integration added");
         }
     }
 }
