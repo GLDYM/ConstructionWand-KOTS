@@ -19,12 +19,14 @@ import thetadev.constructionwand.network.PacketWandOption;
 public class ClientEvents
 {
     private boolean optPressed;
+    private boolean leftShiftPressed;
 
     public ClientEvents() {
+        leftShiftPressed = false;
         optPressed = false;
     }
 
-    // Send state of OPT key to server
+    // Send state of LeftShift and OPT key to server
     @SubscribeEvent
     public void KeyEvent(InputEvent.Key event) {
         Player player = Minecraft.getInstance().player;
@@ -32,9 +34,11 @@ public class ClientEvents
         if(WandUtil.holdingWand(player) == null) return;
 
         boolean optState = isOptKeyDown();
-        if(optPressed != optState) {
+        boolean leftShiftState = isLeftShiftKeyDown();
+        if(optPressed != optState || leftShiftPressed != leftShiftState) {
             optPressed = optState;
-            PacketQueryUndo packet = new PacketQueryUndo(optPressed);
+            leftShiftPressed = leftShiftState;
+            PacketQueryUndo packet = new PacketQueryUndo(optPressed, leftShiftPressed);
             ConstructionWand.instance.HANDLER.sendToServer(packet);
             //ConstructionWand.LOGGER.debug("OPT key update: " + optPressed);
         }
@@ -46,7 +50,7 @@ public class ClientEvents
         Player player = Minecraft.getInstance().player;
         double scroll = event.getScrollDelta();
 
-        if(player == null || !modeKeyCombDown(player) || scroll == 0) return;
+        if(!modeKeyCombDown() || scroll == 0) return;
 
         ItemStack wand = WandUtil.holdingWand(player);
         if(wand == null) return;
@@ -62,7 +66,7 @@ public class ClientEvents
     public void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
         Player player = event.getEntity();
 
-        if(player == null || !modeKeyCombDown(player)) return;
+        if(!modeKeyCombDown()) return;
 
         ItemStack wand = event.getItemStack();
         if(!(wand.getItem() instanceof ItemWand)) return;
@@ -77,8 +81,7 @@ public class ClientEvents
     public void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
         if(event.getSide().isServer()) return;
 
-        Player player = event.getEntity();
-        if(player == null || !guiKeyCombDown(player)) return;
+        if(!guiKeyCombDown()) return;
 
         ItemStack wand = event.getItemStack();
         if(!(wand.getItem() instanceof ItemWand)) return;
@@ -91,15 +94,19 @@ public class ClientEvents
         return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), id);
     }
 
+    public static boolean isLeftShiftKeyDown() {
+        return isKeyDown(340);
+    }
+
     public static boolean isOptKeyDown() {
         return isKeyDown(ConfigClient.OPT_KEY.get());
     }
 
-    public static boolean modeKeyCombDown(Player player) {
-        return player.isCrouching() && (isOptKeyDown() || !ConfigClient.SHIFTOPT_MODE.get());
+    public static boolean modeKeyCombDown() {
+        return isOptKeyDown() && (isLeftShiftKeyDown() || !ConfigClient.SHIFTOPT_MODE.get());
     }
 
-    public static boolean guiKeyCombDown(Player player) {
-        return player.isCrouching() && (isOptKeyDown() || !ConfigClient.SHIFTOPT_GUI.get());
+    public static boolean guiKeyCombDown() {
+        return isOptKeyDown() && (isLeftShiftKeyDown() || !ConfigClient.SHIFTOPT_GUI.get());
     }
 }

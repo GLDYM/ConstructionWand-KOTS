@@ -131,7 +131,8 @@ dependencies {
     compileOnly fg.deobf("vazkii.botania:Botania:${botania}:api")
     compileOnly fg.deobf("curse.maven:l2-backpack-620229:${l2backpack_fileid}")
     compileOnly fg.deobf("curse.maven:l2library-620203:${l2library_fileid}")
-    compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api"))
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    compileOnly fg.deobf("org.appliedenergistics:appliedenergistics2:15.3.6")
 }
 
 jar {

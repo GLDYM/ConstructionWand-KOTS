@@ -38,13 +38,14 @@ public class UndoHistory
         history.remove(player.getUUID());
     }
 
-    public void updateClient(Player player, boolean ctrlDown) {
+    public void updateClient(Player player, boolean ctrlDown, boolean shiftDown) {
         Level world = player.level();
         if(world.isClientSide) return;
 
         // Set state of CTRL key
         PlayerEntry playerEntry = getEntryFromPlayer(player);
         playerEntry.undoActive = ctrlDown;
+        playerEntry.shiftActive = shiftDown;
 
         LinkedList<HistoryEntry> historyEntries = playerEntry.entries;
         Set<BlockPos> positions;
@@ -60,6 +61,10 @@ public class UndoHistory
 
         PacketUndoBlocks packet = new PacketUndoBlocks(positions);
         ConstructionWand.instance.HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), packet);
+    }
+
+    public boolean isShiftActive(Player player) {
+        return getEntryFromPlayer(player).shiftActive;
     }
 
     public boolean isUndoActive(Player player) {
@@ -81,7 +86,7 @@ public class UndoHistory
 
         if(entry.undo(player)) {
             historyEntries.remove(entry);
-            updateClient(player, true);
+            updateClient(player, true, playerEntry.shiftActive);
             return true;
         }
         return false;
@@ -91,10 +96,12 @@ public class UndoHistory
     {
         public final LinkedList<HistoryEntry> entries;
         public boolean undoActive;
+        public boolean shiftActive;
 
         public PlayerEntry() {
             entries = new LinkedList<>();
             undoActive = false;
+            shiftActive = false;
         }
     }
 

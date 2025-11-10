@@ -47,7 +47,7 @@ public abstract class ItemWand extends Item implements ICustomItemModel
 
         ItemStack stack = player.getItemInHand(hand);
 
-        if(player.isCrouching() && ConstructionWand.instance.undoHistory.isUndoActive(player)) {
+        if(ConstructionWand.instance.undoHistory.isUndoActive(player)) {
             return ConstructionWand.instance.undoHistory.undo(player, world, context.getClickedPos()) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         }
         else {
@@ -61,7 +61,7 @@ public abstract class ItemWand extends Item implements ICustomItemModel
     public InteractionResultHolder<ItemStack> use(@Nonnull Level world, Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if(!player.isCrouching()) {
+        if(!ConstructionWand.instance.undoHistory.isUndoActive(player)) {
             if(world.isClientSide) return InteractionResultHolder.fail(stack);
 
             // Right click: Place angel block

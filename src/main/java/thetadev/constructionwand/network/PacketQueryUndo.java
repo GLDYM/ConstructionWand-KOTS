@@ -10,17 +10,20 @@ import java.util.function.Supplier;
 public class PacketQueryUndo
 {
     public boolean undoPressed;
+    public boolean shiftPressed;
 
-    public PacketQueryUndo(boolean undoPressed) {
+    public PacketQueryUndo(boolean undoPressed, boolean shiftPressed) {
         this.undoPressed = undoPressed;
+        this.shiftPressed = shiftPressed;
     }
 
     public static void encode(PacketQueryUndo msg, FriendlyByteBuf buffer) {
         buffer.writeBoolean(msg.undoPressed);
+        buffer.writeBoolean(msg.shiftPressed);
     }
 
     public static PacketQueryUndo decode(FriendlyByteBuf buffer) {
-        return new PacketQueryUndo(buffer.readBoolean());
+        return new PacketQueryUndo(buffer.readBoolean(), buffer.readBoolean());
     }
 
     public static class Handler
@@ -31,7 +34,7 @@ public class PacketQueryUndo
             ServerPlayer player = ctx.get().getSender();
             if(player == null) return;
 
-            ConstructionWand.instance.undoHistory.updateClient(player, msg.undoPressed);
+            ConstructionWand.instance.undoHistory.updateClient(player, msg.undoPressed, msg.shiftPressed);
 
             //ConstructionWand.LOGGER.debug("Undo queried");
         }
