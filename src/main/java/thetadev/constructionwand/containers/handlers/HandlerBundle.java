@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import thetadev.constructionwand.api.IContainerHandler;
+import thetadev.constructionwand.containers.ContainerTrace;
 import thetadev.constructionwand.basics.WandUtil;
 
 import java.util.List;
@@ -15,18 +16,23 @@ import java.util.stream.Stream;
 public class HandlerBundle implements IContainerHandler
 {
     @Override
-    public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
+    public boolean matches(Player player, ItemStack inventoryStack) {
         return inventoryStack != null && inventoryStack.getCount() == 1 && inventoryStack.getItem() == Items.BUNDLE;
     }
 
     @Override
-    public int countItems(Player player, ItemStack itemStack, ItemStack inventoryStack) {
+    public int getSignature(Player player, ItemStack inventoryStack) {
+        return inventoryStack.hashCode();
+    }
+
+    @Override
+    public int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack) {
         return getContents(inventoryStack).filter((stack) -> WandUtil.stackEquals(stack, itemStack))
                 .map(ItemStack::getCount).reduce(0, Integer::sum);
     }
 
     @Override
-    public int useItems(Player player, ItemStack itemStack, ItemStack inventoryStack, int count) {
+    public int useItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack, int count) {
         AtomicInteger newCount = new AtomicInteger(count);
 
         List<ItemStack> itemStacks = getContents(inventoryStack).filter((stack -> {

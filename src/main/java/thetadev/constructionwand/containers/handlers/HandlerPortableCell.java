@@ -10,17 +10,22 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import thetadev.constructionwand.api.IContainerHandler;
+import thetadev.constructionwand.containers.ContainerTrace;
 
 public class HandlerPortableCell implements IContainerHandler {
 
     @Override
-    public boolean matches(Player player, ItemStack itemStack, ItemStack stack) {
-        return stack.getItem() instanceof PortableCellItem;
+    public boolean matches(Player player, ItemStack inventoryStack) {
+        return inventoryStack.getItem() instanceof PortableCellItem;
     }
 
+    @Override
+    public int getSignature(Player player, ItemStack inventoryStack) {
+        return inventoryStack.hashCode();
+    }
 
     @Override
-    public int countItems(Player player, ItemStack target, ItemStack cell) {
+    public int countItems(Player player, ContainerTrace trace, ItemStack target, ItemStack cell) {
         if (player instanceof ServerPlayer serverPlayer) {
 
             MEStorage storage = getStorage(serverPlayer, cell);
@@ -43,7 +48,7 @@ public class HandlerPortableCell implements IContainerHandler {
 
 
     @Override
-    public int useItems(Player player, ItemStack target, ItemStack cell, int count) {
+    public int useItems(Player player, ContainerTrace trace, ItemStack target, ItemStack cell, int count) {
         if (player instanceof ServerPlayer serverPlayer) {
             MEStorage storage = getStorage(serverPlayer, cell);
             if (storage == null) return count;

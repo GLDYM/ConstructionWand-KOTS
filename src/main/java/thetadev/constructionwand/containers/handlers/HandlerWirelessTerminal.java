@@ -10,17 +10,28 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import thetadev.constructionwand.api.IContainerHandler;
+import thetadev.constructionwand.containers.ContainerTrace;
 
 public class HandlerWirelessTerminal implements IContainerHandler {
 
     @Override
-    public boolean matches(Player player, ItemStack itemStack, ItemStack stack) {
-        return stack.getItem() instanceof WirelessTerminalItem;
+    public boolean matches(Player player, ItemStack inventoryStack) {
+        return inventoryStack.getItem() instanceof WirelessTerminalItem;
     }
 
+    @Override   
+    public int getSignature(Player player, ItemStack inventoryStack) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            MEStorage storage = getStorage(serverPlayer, inventoryStack);
+            if (storage != null) {
+                return storage.hashCode();
+            }
+        }
+        return -1;
+    }
 
     @Override
-    public int countItems(Player player, ItemStack target, ItemStack terminal) {
+    public int countItems(Player player, ContainerTrace trace, ItemStack target, ItemStack terminal) {
         if (player instanceof ServerPlayer serverPlayer) {
 
             MEStorage storage = getStorage(serverPlayer, terminal);
@@ -43,7 +54,7 @@ public class HandlerWirelessTerminal implements IContainerHandler {
 
 
     @Override
-    public int useItems(Player player, ItemStack target, ItemStack terminal, int count) {
+    public int useItems(Player player, ContainerTrace trace, ItemStack target, ItemStack terminal, int count) {
         if (player instanceof ServerPlayer serverPlayer) {
             MEStorage storage = getStorage(serverPlayer, terminal);
             if (storage == null) return count;

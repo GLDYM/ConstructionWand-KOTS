@@ -3,6 +3,7 @@ package thetadev.constructionwand.basics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -25,6 +26,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import thetadev.constructionwand.ConstructionWand;
 import thetadev.constructionwand.containers.ContainerManager;
+import thetadev.constructionwand.containers.ContainerTrace;
 import thetadev.constructionwand.items.wand.ItemWand;
 import thetadev.constructionwand.wand.WandItemUseContext;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -189,19 +191,23 @@ public class WandUtil
         if(player.isCreative()) return Integer.MAX_VALUE;
 
         int total = 0;
-        ContainerManager containerManager = ConstructionWand.instance.containerManager;
-        List<ItemStack> inventory = WandUtil.getFullInv(player);
 
-        for(ItemStack stack : inventory) {
-            if(stack == null || stack.isEmpty()) continue;
+        if(player instanceof ServerPlayer serverPlayer) {
+            ContainerManager containerManager = ConstructionWand.instance.containerManager;
+            ContainerTrace trace = new ContainerTrace(serverPlayer);
+            List<ItemStack> inventory = WandUtil.getFullInv(serverPlayer);
 
-            if(WandUtil.stackEquals(stack, item)) {
-                total += stack.getCount();
-            }
-            else {
-                int amount = containerManager.countItems(player, new ItemStack(item), stack);
-                if(amount == Integer.MAX_VALUE) return Integer.MAX_VALUE;
-                total += amount;
+            for(ItemStack stack : inventory) {
+                if(stack == null || stack.isEmpty()) continue;
+
+                if(WandUtil.stackEquals(stack, item)) {
+                    total += stack.getCount();
+                }
+                else {
+                    int amount = containerManager.countItems(serverPlayer, trace, new ItemStack(item), stack);
+                    if(amount == Integer.MAX_VALUE) return Integer.MAX_VALUE;
+                    total += amount;
+                }
             }
         }
         return total;

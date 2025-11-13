@@ -4,20 +4,27 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
+import thetadev.constructionwand.ConstructionWand;
 import thetadev.constructionwand.api.IContainerHandler;
 import thetadev.constructionwand.basics.WandUtil;
+import thetadev.constructionwand.containers.ContainerTrace;
 
 import java.util.Optional;
 
 public class HandlerCapability implements IContainerHandler
 {
     @Override
-    public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
+    public boolean matches(Player player, ItemStack inventoryStack) {
         return inventoryStack != null && inventoryStack.getCapability(ForgeCapabilities.ITEM_HANDLER).isPresent();
     }
 
     @Override
-    public int countItems(Player player, ItemStack itemStack, ItemStack inventoryStack) {
+    public int getSignature(Player player, ItemStack inventoryStack) {
+        return inventoryStack.hashCode();
+    }
+
+    @Override
+    public int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack) {
         Optional<IItemHandler> itemHandlerOptional = inventoryStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
         if(itemHandlerOptional.isEmpty()) return 0;
 
@@ -29,13 +36,15 @@ public class HandlerCapability implements IContainerHandler
             ItemStack containerStack = itemHandler.getStackInSlot(i);
             if(WandUtil.stackEquals(itemStack, containerStack)) {
                 total += Math.max(0, containerStack.getCount());
+            } else {
+                total += ConstructionWand.instance.containerManager.countItems(player, trace, itemStack, containerStack);
             }
         }
         return total;
     }
 
     @Override
-    public int useItems(Player player, ItemStack itemStack, ItemStack inventoryStack, int count) {
+    public int useItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack, int count) {
         Optional<IItemHandler> itemHandlerOptional = inventoryStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
         if(itemHandlerOptional.isEmpty()) return 0;
 
@@ -47,6 +56,12 @@ public class HandlerCapability implements IContainerHandler
                 ItemStack extracted = itemHandler.extractItem(i, count, false);
                 count -= extracted.getCount();
                 if(count <= 0) break;
+            } else {
+                int before = count;
+                count = ConstructionWand.instance.containerManager.useItems(player, trace, itemStack, handlerStack, count);
+                if(count < before) {
+                    if(count <= 0) break;
+                }
             }
         }
         return count;

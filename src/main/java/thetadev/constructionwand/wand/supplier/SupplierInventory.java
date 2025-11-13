@@ -1,6 +1,7 @@
 package thetadev.constructionwand.wand.supplier;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -17,6 +18,7 @@ import thetadev.constructionwand.basics.WandUtil;
 import thetadev.constructionwand.basics.option.WandOptions;
 import thetadev.constructionwand.basics.pool.IPool;
 import thetadev.constructionwand.basics.pool.OrderedPool;
+import thetadev.constructionwand.containers.ContainerTrace;
 import thetadev.constructionwand.containers.ContainerManager;
 import thetadev.constructionwand.wand.undo.PlaceSnapshot;
 
@@ -132,20 +134,24 @@ public class SupplierInventory implements IWandSupplier
     }
 
     private int takeItemsInvList(int count, Item item, List<ItemStack> inv, boolean container) {
-        ContainerManager containerManager = ConstructionWand.instance.containerManager;
+        if (player instanceof ServerPlayer serverPlayer) {
 
-        for(ItemStack stack : inv) {
-            if(count == 0) break;
+            ContainerManager containerManager = ConstructionWand.instance.containerManager;
+            ContainerTrace trace = new ContainerTrace(serverPlayer);
 
-            if(container) {
-                count = containerManager.useItems(player, new ItemStack(item), stack, count);
-            }
+            for(ItemStack stack : inv) {
+                if(count == 0) break;
 
-            if(!container && WandUtil.stackEquals(stack, item)) {
-                int toTake = Math.min(count, stack.getCount());
-                stack.shrink(toTake);
-                count -= toTake;
-                player.getInventory().setChanged();
+                if(container) {
+                    count = containerManager.useItems(serverPlayer, trace, new ItemStack(item), stack, count);
+                }
+
+                if(!container && WandUtil.stackEquals(stack, item)) {
+                    int toTake = Math.min(count, stack.getCount());
+                    stack.shrink(toTake);
+                    count -= toTake;
+                    serverPlayer.getInventory().setChanged();
+                }
             }
         }
         return count;

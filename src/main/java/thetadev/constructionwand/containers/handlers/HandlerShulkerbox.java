@@ -8,31 +8,42 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
+import thetadev.constructionwand.ConstructionWand;
 import thetadev.constructionwand.api.IContainerHandler;
 import thetadev.constructionwand.basics.WandUtil;
+import thetadev.constructionwand.containers.ContainerTrace;
 
 public class HandlerShulkerbox implements IContainerHandler
 {
     private final int SLOTS = 27;
 
     @Override
-    public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
+    public boolean matches(Player player, ItemStack inventoryStack) {
         return inventoryStack != null && inventoryStack.getCount() == 1 && Block.byItem(inventoryStack.getItem()) instanceof ShulkerBoxBlock;
     }
 
     @Override
-    public int countItems(Player player, ItemStack itemStack, ItemStack inventoryStack) {
+    public int getSignature(Player player, ItemStack inventoryStack) {
+        return inventoryStack.hashCode();
+    }
+
+    @Override
+    public int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack) {
         int count = 0;
 
         for(ItemStack stack : getItemList(inventoryStack)) {
-            if(WandUtil.stackEquals(stack, itemStack)) count += stack.getCount();
+            if(WandUtil.stackEquals(stack, itemStack)) {
+                count += stack.getCount();
+            } else {
+                count += ConstructionWand.instance.containerManager.countItems(player, trace, itemStack, stack);
+            }
         }
 
         return count;
     }
 
     @Override
-    public int useItems(Player player, ItemStack itemStack, ItemStack inventoryStack, int count) {
+    public int useItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack, int count) {
         NonNullList<ItemStack> itemList = getItemList(inventoryStack);
         boolean changed = false;
 
@@ -43,6 +54,13 @@ public class HandlerShulkerbox implements IContainerHandler
                 count -= toTake;
                 changed = true;
                 if(count == 0) break;
+            } else {
+                int before = count;
+                count = ConstructionWand.instance.containerManager.useItems(player, trace, itemStack, stack, count);
+                if(count < before) {
+                    changed = true;
+                    if(count == 0) break;
+                }
             }
         }
         if(changed) {

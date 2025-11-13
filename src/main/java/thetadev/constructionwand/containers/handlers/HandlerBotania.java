@@ -4,6 +4,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import thetadev.constructionwand.api.IContainerHandler;
+import thetadev.constructionwand.containers.ContainerTrace;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.BlockProvider;
 
@@ -12,12 +13,17 @@ import java.util.Optional;
 public class HandlerBotania implements IContainerHandler
 {
     @Override
-    public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
+    public boolean matches(Player player, ItemStack inventoryStack) {
         return inventoryStack != null && inventoryStack.getCapability(BotaniaForgeCapabilities.BLOCK_PROVIDER).isPresent();
     }
 
     @Override
-    public int countItems(Player player, ItemStack itemStack, ItemStack inventoryStack) {
+    public int getSignature(Player player, ItemStack inventoryStack) {
+        return inventoryStack.hashCode();
+    }
+
+    @Override
+    public int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack) {
         Optional<BlockProvider> provOptional = inventoryStack.getCapability(BotaniaForgeCapabilities.BLOCK_PROVIDER).resolve();
         if(provOptional.isEmpty()) return 0;
 
@@ -29,7 +35,7 @@ public class HandlerBotania implements IContainerHandler
     }
 
     @Override
-    public int useItems(Player player, ItemStack itemStack, ItemStack inventoryStack, int count) {
+    public int useItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack, int count) {
         Optional<BlockProvider> provOptional = inventoryStack.getCapability(BotaniaForgeCapabilities.BLOCK_PROVIDER).resolve();
         if(provOptional.isEmpty()) return 0;
 

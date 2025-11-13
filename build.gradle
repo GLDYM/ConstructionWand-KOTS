@@ -134,6 +134,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:l2library-620203:${l2library_fileid}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     compileOnly fg.deobf("curse.maven:applied-energistics-2-223794:${ae2_fileid}")
+    compileOnly fg.deobf("curse.maven:toms-storage-378609:${tomsstorage_fileid}")
 }
 
 jar {
