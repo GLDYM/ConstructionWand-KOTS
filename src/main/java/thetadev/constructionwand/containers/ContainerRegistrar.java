@@ -2,6 +2,7 @@ package thetadev.constructionwand.containers;
 
 import net.minecraftforge.fml.ModList;
 import thetadev.constructionwand.ConstructionWand;
+import thetadev.constructionwand.containers.handlers.HandlerAdvWirelessTerminal;
 import thetadev.constructionwand.containers.handlers.HandlerBotania;
 import thetadev.constructionwand.containers.handlers.HandlerBundle;
 import thetadev.constructionwand.containers.handlers.HandlerCapability;
@@ -37,6 +38,11 @@ public class ContainerRegistrar
             ConstructionWand.instance.containerManager.register(new HandlerPortableCell());
             ConstructionWand.instance.containerManager.register(new HandlerWirelessTerminal());
             ConstructionWand.LOGGER.info("Applied Energistics 2 integration added");
+        }
+
+        if(ModList.get().isLoaded("toms_storage")) {
+            ConstructionWand.instance.containerManager.register(new HandlerAdvWirelessTerminal());
+            ConstructionWand.LOGGER.info("Tom's Simple Storage Mod integration added");
         }
     }
 }
