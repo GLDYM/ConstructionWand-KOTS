@@ -134,9 +134,11 @@ public class SupplierInventory implements IWandSupplier
     }
 
     private int takeItemsInvList(int count, Item item, List<ItemStack> inv, boolean container) {
+        if (count == 0) return count;
         if (player instanceof ServerPlayer serverPlayer) {
 
             ContainerManager containerManager = ConstructionWand.instance.containerManager;
+            // In use, ContainerTrace is just a placeholder
             ContainerTrace trace = new ContainerTrace(serverPlayer);
 
             for(ItemStack stack : inv) {

@@ -6,6 +6,7 @@ import com.tom.storagemod.item.AdvWirelessTerminalItem;
 import com.tom.storagemod.util.StoredItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,18 +27,21 @@ public class HandlerAdvWirelessTerminal implements IContainerHandler {
 
     @Override
     public int getSignature(Player player, ItemStack inventoryStack) {
-        if (inventoryStack.hasTag() && 
-            inventoryStack.getTag().contains("BindX") && 
-            inventoryStack.getTag().contains("BindY") && 
-            inventoryStack.getTag().contains("BindZ") && 
-            inventoryStack.getTag().contains("BindDim")) {
-            int x = inventoryStack.getTag().getInt("BindX");
-            int y = inventoryStack.getTag().getInt("BindY");
-            int z = inventoryStack.getTag().getInt("BindZ");
-            String dim = inventoryStack.getTag().getString("BindDim");
-            return (x * 31 + y * 17 + z) ^ dim.hashCode();
+        CompoundTag tag = inventoryStack.getTag();
+        if (tag == null) return -1;
+
+        if (!tag.contains("BindX") || 
+            !tag.contains("BindY") || 
+            !tag.contains("BindZ") || 
+            !tag.contains("BindDim")) {
+            return -1;
         }
-        return -1;
+
+        int x = tag.getInt("BindX");
+        int y = tag.getInt("BindY");
+        int z = tag.getInt("BindZ");
+        String dim = tag.getString("BindDim");
+        return (x * 31 + y * 17 + z) ^ dim.hashCode();
     }
 
     @Override
@@ -66,12 +70,21 @@ public class HandlerAdvWirelessTerminal implements IContainerHandler {
     }
 
     private StorageTerminalBlockEntity resolveTerminal(Player player, ItemStack stack) {
-        if (!stack.hasTag() || !stack.getTag().contains("BindX")) return null;
-        int x = stack.getTag().getInt("BindX");
-        int y = stack.getTag().getInt("BindY");
-        int z = stack.getTag().getInt("BindZ");
+        CompoundTag tag = stack.getTag();
+        if (tag == null) return null;
+
+        if (!tag.contains("BindX") || 
+            !tag.contains("BindY") || 
+            !tag.contains("BindZ") || 
+            !tag.contains("BindDim")) {
+            return null;
+        }
+
+        int x = tag.getInt("BindX");
+        int y = tag.getInt("BindY");
+        int z = tag.getInt("BindZ");
         BlockPos pos = new BlockPos(x, y, z);
-        String dim = stack.getTag().getString("BindDim");
+        String dim = tag.getString("BindDim");
 
         Level termWorld = player.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dim)));
         if (termWorld == null || !termWorld.isLoaded(pos)) return null;

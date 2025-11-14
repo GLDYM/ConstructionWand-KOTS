@@ -9,6 +9,7 @@ import thetadev.constructionwand.containers.handlers.HandlerCapability;
 import thetadev.constructionwand.containers.handlers.HandlerLightland;
 import thetadev.constructionwand.containers.handlers.HandlerPortableCell;
 import thetadev.constructionwand.containers.handlers.HandlerShulkerbox;
+import thetadev.constructionwand.containers.handlers.HandlerWirelessGrid;
 import thetadev.constructionwand.containers.handlers.HandlerWirelessTerminal;
 
 
@@ -42,7 +43,12 @@ public class ContainerRegistrar
 
         if(ModList.get().isLoaded("toms_storage")) {
             ConstructionWand.instance.containerManager.register(new HandlerAdvWirelessTerminal());
-            ConstructionWand.LOGGER.info("Tom's Simple Storage Mod integration added");
+            ConstructionWand.LOGGER.info("Tom's Simple Storage integration added");
+        }
+
+        if(ModList.get().isLoaded("refinedstorage")) {
+            ConstructionWand.instance.containerManager.register(new HandlerWirelessGrid());
+            ConstructionWand.LOGGER.info("Refined Storage integration added");
         }
     }
 }

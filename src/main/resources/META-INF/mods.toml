@@ -4,10 +4,10 @@ license = "MIT License"
 [[mods]]
 modId="constructionwand"
 version="${file.jarVersion}"
-displayName="Construction Wand"
-displayURL="https://github.com/Theta-Dev/ConstructionWand"
+displayName="Construction Wand KOTS"
+displayURL="https://github.com/GLDYM/ConstructionWand-KOTS"
 logoFile="logo.png"
-authors="ThetaDev"
+authors="Polaris_Light"
 description='''
 Construction Wands make building easier!
 
