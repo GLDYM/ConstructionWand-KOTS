@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,9 +18,12 @@ import thetadev.constructionwand.api.IContainerHandler;
 import thetadev.constructionwand.containers.ContainerTrace;
 
 import com.refinedmods.refinedstorage.api.network.INetwork;
+import com.refinedmods.refinedstorage.api.network.item.INetworkItemManager;
 import com.refinedmods.refinedstorage.api.network.node.INetworkNode;
 import com.refinedmods.refinedstorage.api.network.node.INetworkNodeProxy;
 import com.refinedmods.refinedstorage.api.util.Action;
+import com.refinedmods.refinedstorage.inventory.player.PlayerSlot;
+import com.refinedmods.refinedstorage.item.NetworkItem;
 import com.refinedmods.refinedstorage.item.WirelessGridItem;
 import com.refinedmods.refinedstorage.item.EnergyItem;
 import com.refinedmods.refinedstorage.RS;
@@ -54,8 +58,19 @@ public class HandlerWirelessGrid implements IContainerHandler {
     public int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack) {
         INetwork network = resolveNetwork(player, inventoryStack);
         if (network == null) return 0;
-        
-        ItemStack simulated = network.extractItem(itemStack, Integer.MAX_VALUE, Action.SIMULATE);
+
+        int extractCost = RS.SERVER_CONFIG.getWirelessGrid().getExtractUsage();
+        IEnergyStorage energy = inventoryStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
+        if (energy == null) return 0;
+        int energyStored = energy.getEnergyStored();
+
+        int maxByEnergy = energyStored / extractCost;
+        if (maxByEnergy <= 0) {
+            player.displayClientMessage(Component.translatable("misc.refinedstorage.wireless_grid.out_of_energy"), true);
+            return 0;
+        }
+
+        ItemStack simulated = network.extractItem(itemStack, maxByEnergy, Action.SIMULATE);
         return simulated.isEmpty() ? 0 : simulated.getCount();
     }
 
