@@ -46,11 +46,11 @@ public class RenderBlockPreview
             colorG = 1;
         }
         else {
-            // Use cached wandJob for previews of the same target pos/dir
+            // Use cached previews of the same target pos/dir
             // Exception: always update if blockCount < 2 to prevent 1-block previews when block updates
             // from the last placement are lagging
             if(lastRayTraceResult == null || !compareRTR(lastRayTraceResult, rtr) || lastWand.equals(wand)
-                || previewBlocks.size() < 2) {
+                || previewBlocks == null || previewBlocks.size() < 2) {
                 lastRayTraceResult = rtr;
                 lastWand = wand;
                 ConstructionWand.instance.HANDLER.sendToServer(new PacketRequestPreview(rtr, wand));
