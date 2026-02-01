@@ -19,6 +19,7 @@ public class HandlerLightland implements IContainerHandler {
         return resolveInvCap(inventoryStack) != null;
     }
 
+    // Ender Chest is 0
     @Override
     public int getSignature(Player player, ItemStack inventoryStack) {
         InvPickupCap<?> cap = resolveInvCap(inventoryStack);

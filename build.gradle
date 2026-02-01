@@ -136,6 +136,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:applied-energistics-2-223794:${ae2_fileid}")
     compileOnly fg.deobf("curse.maven:toms-storage-378609:${tomsstorage_fileid}")
     compileOnly fg.deobf("curse.maven:refined-storage-243076:${refinedstorage_fileid}")
+    compileOnly fg.deobf("curse.maven:beyond-dimensions-1222890:${beyond_dimensions_fileid}")
 }
 
 jar {

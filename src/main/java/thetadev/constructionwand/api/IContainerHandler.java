@@ -8,6 +8,7 @@ public interface IContainerHandler
 {
     boolean matches(Player player, ItemStack inventoryStack);
 
+    // Ender Chest is 0
     int getSignature(Player player, ItemStack inventoryStack);
 
     int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack);

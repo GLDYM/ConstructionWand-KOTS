@@ -9,7 +9,7 @@ import thetadev.constructionwand.ConstructionWand;
 
 public class ModStats
 {
-    public static final ResourceLocation USE_WAND = new ResourceLocation(ConstructionWand.MODID, "use_wand");
+    public static final ResourceLocation USE_WAND = ResourceLocation.fromNamespaceAndPath(ConstructionWand.MODID, "use_wand");
 
     public static void register() {
         registerStat(USE_WAND);

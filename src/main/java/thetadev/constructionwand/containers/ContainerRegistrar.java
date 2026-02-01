@@ -6,7 +6,9 @@ import thetadev.constructionwand.containers.handlers.HandlerAdvWirelessTerminal;
 import thetadev.constructionwand.containers.handlers.HandlerBotania;
 import thetadev.constructionwand.containers.handlers.HandlerBundle;
 import thetadev.constructionwand.containers.handlers.HandlerCapability;
+import thetadev.constructionwand.containers.handlers.HandlerDimensionsNet;
 import thetadev.constructionwand.containers.handlers.HandlerLightland;
+import thetadev.constructionwand.containers.handlers.HandlerNetTerminal;
 import thetadev.constructionwand.containers.handlers.HandlerPortableCell;
 import thetadev.constructionwand.containers.handlers.HandlerShulkerbox;
 import thetadev.constructionwand.containers.handlers.HandlerWirelessGrid;
@@ -49,6 +51,12 @@ public class ContainerRegistrar
         if(ModList.get().isLoaded("refinedstorage")) {
             ConstructionWand.instance.containerManager.register(new HandlerWirelessGrid());
             ConstructionWand.LOGGER.info("Refined Storage integration added");
+        }
+
+        if(ModList.get().isLoaded("beyonddimensions")) {
+            ConstructionWand.instance.containerManager.register(new HandlerDimensionsNet());
+            ConstructionWand.instance.containerManager.register(new HandlerNetTerminal());
+            ConstructionWand.LOGGER.info("Beyond Dimensions integration added");
         }
     }
 }

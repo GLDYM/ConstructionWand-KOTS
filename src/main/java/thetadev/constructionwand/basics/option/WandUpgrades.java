@@ -36,7 +36,7 @@ public class WandUpgrades<T extends IWandUpgrade>
 
         for(int i = 0; i < listnbt.size(); i++) {
             String str = listnbt.getString(i);
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(str));
+            Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(str));
 
             T data;
             try {

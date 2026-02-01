@@ -43,30 +43,30 @@ public class ConstructionWand
     public UndoHistory undoHistory;
     public RenderBlockPreview renderBlockPreview;
 
-    public ConstructionWand() {
+    public ConstructionWand(FMLJavaModLoadingContext context) {
         instance = this;
 
         containerManager = new ContainerManager();
         undoHistory = new UndoHistory();
 
         // Register setup methods for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        context.getModEventBus().addListener(this::commonSetup);
+        context.getModEventBus().addListener(this::clientSetup);
         MinecraftForge.EVENT_BUS.register(this);
 
         // Register Item DeferredRegister
-        ModItems.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModItems.ITEMS.register(context.getModEventBus());
 
         // Config setup
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ConfigServer.SPEC);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigClient.SPEC);
+        context.registerConfig(ModConfig.Type.SERVER, ConfigServer.SPEC);
+        context.registerConfig(ModConfig.Type.CLIENT, ConfigClient.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("ConstructionWand says hello - may the odds be ever in your favor.");
 
         // Register packets
-        HANDLER = NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
+        HANDLER = NetworkRegistry.newSimpleChannel(ResourceLocation.fromNamespaceAndPath(MODID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
         int packetIndex = 0;
         HANDLER.registerMessage(packetIndex++, PacketUndoBlocks.class, PacketUndoBlocks::encode, PacketUndoBlocks::decode, PacketUndoBlocks.Handler::handle);
         HANDLER.registerMessage(packetIndex++, PacketQueryUndo.class, PacketQueryUndo::encode, PacketQueryUndo::decode, PacketQueryUndo.Handler::handle);
@@ -90,6 +90,6 @@ public class ConstructionWand
     }
 
     public static ResourceLocation loc(String name) {
-        return new ResourceLocation(MODID, name);
+        return ResourceLocation.fromNamespaceAndPath(MODID, name);
     }
 }

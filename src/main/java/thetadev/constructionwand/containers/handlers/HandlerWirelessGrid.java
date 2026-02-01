@@ -126,7 +126,7 @@ public class HandlerWirelessGrid implements IContainerHandler {
         BlockPos pos = new BlockPos(x, y, z);
         String dim = tag.getString("Dimension");
 
-        Level termWorld = player.level().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dim)));
+        Level termWorld = player.level().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(dim)));
         if (termWorld == null || !termWorld.isLoaded(pos)) return null;
 
         BlockEntity be = termWorld.getBlockEntity(pos);

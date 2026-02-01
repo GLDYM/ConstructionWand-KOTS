@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 @JeiPlugin
 public class ConstructionWandJeiPlugin implements IModPlugin
 {
-    private static final ResourceLocation pluginId = new ResourceLocation(ConstructionWand.MODID, ConstructionWand.MODID);
+    private static final ResourceLocation pluginId = ResourceLocation.fromNamespaceAndPath(ConstructionWand.MODID, ConstructionWand.MODID);
     private static final String baseKey = ConstructionWand.MODID + ".description.";
     private static final String baseKeyItem = "item." + ConstructionWand.MODID + ".";
 

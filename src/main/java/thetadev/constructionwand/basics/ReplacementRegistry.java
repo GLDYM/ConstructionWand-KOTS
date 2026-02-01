@@ -23,7 +23,7 @@ public class ReplacementRegistry
             HashSet<Item> set = new HashSet<>();
 
             for(String id : ((String) key).split(";")) {
-                Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
+                Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(id));
                 if(item == null || item == Items.AIR) {
                     ConstructionWand.LOGGER.warn("Replacement Registry: Could not find item " + id);
                     continue;
