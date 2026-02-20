@@ -6,6 +6,9 @@
     "item.constructionwand.core_angel": "천사 완드 코어",
     "item.constructionwand.core_destruction": "파괴 완드 코어",
   
+    "key.constructionwand.category": "건축 완드",
+    "key.constructionwand.wand_option": "완드 옵션",
+  
     "constructionwand.tooltip.blocks": "최대. %d 블록",
     "constructionwand.tooltip.shift": "[SHIFT]를 누르세요.",
     "constructionwand.tooltip.cores": "완드 코어:",

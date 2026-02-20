@@ -5,12 +5,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import thetadev.constructionwand.api.IContainerHandler;
 import thetadev.constructionwand.containers.ContainerTrace;
-import com.wintercogs.beyonddimensions.Item.Custom.NetedItem;
-import com.wintercogs.beyonddimensions.Item.Custom.NetTerminalItem;
+
 import com.wintercogs.beyonddimensions.Api.DataBase.DimensionsNet;
 import com.wintercogs.beyonddimensions.Api.DataBase.Storage.UnifiedStorage;
-import com.wintercogs.beyonddimensions.Api.DataBase.Stack.IStackType;
-import com.wintercogs.beyonddimensions.Api.DataBase.Stack.ItemStackType;
+import com.wintercogs.beyonddimensions.Api.DataBase.Stack.IStackKey;
+import com.wintercogs.beyonddimensions.Api.DataBase.Stack.ItemStackKey;
+import com.wintercogs.beyonddimensions.Item.Custom.NetedItem;
+import com.wintercogs.beyonddimensions.Item.Custom.NetTerminalItem;
 
 public class HandlerNetTerminal implements IContainerHandler {
 
@@ -21,45 +22,38 @@ public class HandlerNetTerminal implements IContainerHandler {
 
     @Override
     public int getSignature(Player player, ItemStack inventoryStack) {
-        if (!(inventoryStack.getItem() instanceof NetTerminalItem terminal)) return 0;
+        if (!(inventoryStack.getItem() instanceof NetTerminalItem terminal)) return -1;
         int id = NetedItem.getNetId(inventoryStack);
-        return (id != -1) ? 10000 + id : 0;
+        return (id != -1) ? 10000 + id : -1;
     }
 
     @Override
     public int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack) {
-        DimensionsNet net = getNetFromTerminal(inventoryStack, player);
+        DimensionsNet net = NetedItem.getNet(inventoryStack);
         if (net == null) return 0;
 
         UnifiedStorage storage = net.getUnifiedStorage();
-        ItemStackType query = new ItemStackType(new ItemStack(itemStack.getItem(), Integer.MAX_VALUE));
-        IStackType<?> result = storage.extract(query, true);
+        long result = storage.extract(new ItemStackKey(itemStack), Integer.MAX_VALUE, true, false).amount();
 
-        if (result instanceof ItemStackType itemResult) {
-            return itemResult.getStack().getCount();
+        if (result > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
         }
-        return 0;
+
+        return (int) result;
     }
 
     @Override
     public int useItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack, int count) {
-        DimensionsNet net = getNetFromTerminal(inventoryStack, player);
+        DimensionsNet net = NetedItem.getNet(inventoryStack);
         if (net == null) return count;
 
         UnifiedStorage storage = net.getUnifiedStorage();
-        ItemStackType request = new ItemStackType(new ItemStack(itemStack.getItem(), count));
-        IStackType<?> extracted = storage.extract(request, false);
+        long result = storage.extract(new ItemStackKey(itemStack), count, false, false).amount();
 
-        if (extracted instanceof ItemStackType itemResult) {
-            return count - itemResult.getStack().getCount();
+        if (result > count) {
+            return 0;
         }
-        return 0;
-    }
 
-    private DimensionsNet getNetFromTerminal(ItemStack terminalStack, Player player) {
-        if (!(terminalStack.getItem() instanceof NetTerminalItem terminal)) return null;
-        int id = NetedItem.getNetId(terminalStack);
-        MinecraftServer server = player.getServer();
-        return (server != null) ? DimensionsNet.getNetFromId(id, server) : null;
+        return count - (int) result;
     }
 }

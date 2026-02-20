@@ -5,10 +5,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import thetadev.constructionwand.api.IContainerHandler;
 import thetadev.constructionwand.containers.ContainerTrace;
+import thetadev.constructionwand.items.wand.ItemWand;
 import com.wintercogs.beyonddimensions.Api.DataBase.DimensionsNet;
 import com.wintercogs.beyonddimensions.Api.DataBase.Storage.UnifiedStorage;
-import com.wintercogs.beyonddimensions.Api.DataBase.Stack.IStackType;
-import com.wintercogs.beyonddimensions.Api.DataBase.Stack.ItemStackType;
+import com.wintercogs.beyonddimensions.Api.DataBase.Stack.IStackKey;
+import com.wintercogs.beyonddimensions.Api.DataBase.Stack.ItemStackKey;
 
 public class HandlerDimensionsNet implements IContainerHandler {
     // This Handler does not related with any specific Item, it works as long as the player has a Dimensions Net.
@@ -16,6 +17,7 @@ public class HandlerDimensionsNet implements IContainerHandler {
 
     @Override
     public boolean matches(Player player, ItemStack inventoryStack) {
+        if (!(inventoryStack.getItem() instanceof ItemWand)) return false;
         DimensionsNet net = DimensionsNet.getNetFromPlayer(player);
         return net != null;
     }
@@ -32,13 +34,13 @@ public class HandlerDimensionsNet implements IContainerHandler {
         if (net == null) return 0;
 
         UnifiedStorage storage = net.getUnifiedStorage();
-        ItemStackType query = new ItemStackType(new ItemStack(itemStack.getItem(), Integer.MAX_VALUE));
-        IStackType<?> result = storage.extract(query, true);
+        long result = storage.extract(new ItemStackKey(itemStack), Integer.MAX_VALUE, true, false).amount();
 
-        if (result instanceof ItemStackType itemResult) {
-            return itemResult.getStack().getCount();
+        if (result > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
         }
-        return 0;
+
+        return (int) result;
     }
 
     @Override
@@ -47,12 +49,13 @@ public class HandlerDimensionsNet implements IContainerHandler {
         if (net == null) return 0;
 
         UnifiedStorage storage = net.getUnifiedStorage();
-        ItemStackType request = new ItemStackType(new ItemStack(itemStack.getItem(), count));
-        IStackType<?> extracted = storage.extract(request, false);
+        long result = storage.extract(new ItemStackKey(itemStack), count, false, false).amount();
 
-        if (extracted instanceof ItemStackType itemResult) {
-            return count - itemResult.getStack().getCount();
+
+        if (result > count) {
+            return 0;
         }
-        return 0;
+
+        return count - (int) result;
     }
 }

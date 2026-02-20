@@ -120,6 +120,9 @@ repositories {
         name = "Illusive Soulworks maven"
         url = "https://maven.theillusivec4.top/"
     }
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
@@ -137,6 +140,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:toms-storage-378609:${tomsstorage_fileid}")
     compileOnly fg.deobf("curse.maven:refined-storage-243076:${refinedstorage_fileid}")
     compileOnly fg.deobf("curse.maven:beyond-dimensions-1222890:${beyond_dimensions_fileid}")
+    // implementation fg.deobf(group: 'localmods', name: 'beyonddimensions-1.20.1-forge-0.6.16', version: '0.6.16', ext: 'jar')
 }
 
 jar {

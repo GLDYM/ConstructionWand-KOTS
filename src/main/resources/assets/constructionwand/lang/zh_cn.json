@@ -5,6 +5,8 @@
   "item.constructionwand.infinity_wand": "无尽手杖",
   "item.constructionwand.core_angel": "天使手杖核心",
   "item.constructionwand.core_destruction": "破坏手杖核心",
+  "key.constructionwand.category": "建筑手杖",
+  "key.constructionwand.wand_option": "手杖功能选项",
   "constructionwand.tooltip.blocks": "最多放置%d个方块",
   "constructionwand.tooltip.shift": "按 [SHIFT]",
   "constructionwand.tooltip.cores": "手杖核心:",

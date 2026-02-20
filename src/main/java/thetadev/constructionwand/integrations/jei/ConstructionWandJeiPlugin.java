@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import thetadev.constructionwand.ConstructionWand;
 import thetadev.constructionwand.basics.ConfigClient;
 import thetadev.constructionwand.basics.ConfigServer;
+import thetadev.constructionwand.client.KeybindHandler;
 import thetadev.constructionwand.items.ModItems;
 
 import javax.annotation.Nonnull;
@@ -40,8 +41,7 @@ public class ConstructionWandJeiPlugin implements IModPlugin
 
     @Override
     public void registerRecipes(@NotNull IRecipeRegistration registration) {
-        Component optkeyComponent = Component.translatable(InputConstants.getKey(ConfigClient.OPT_KEY.get(), -1).getName())
-                .withStyle(ChatFormatting.BLUE);
+        Component optkeyComponent = KeybindHandler.KEY_OPT.getTranslatedKeyMessage().copy().withStyle(ChatFormatting.BLUE);
         Component wandModeComponent = keyComboComponent(ConfigClient.SHIFTOPT_MODE.get(), optkeyComponent);
         Component wandGuiComponent = keyComboComponent(ConfigClient.SHIFTOPT_GUI.get(), optkeyComponent);
 

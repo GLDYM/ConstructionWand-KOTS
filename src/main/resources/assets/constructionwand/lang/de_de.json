@@ -6,6 +6,9 @@
   "item.constructionwand.core_angel": "Kristall der Engel",
   "item.constructionwand.core_destruction": "Kristall der Zerstörung",
 
+  "key.constructionwand.category": "Baustab",
+  "key.constructionwand.wand_option": "Stab-Optionen",
+
   "constructionwand.tooltip.blocks": "Max. %d Blöcke",
   "constructionwand.tooltip.shift": "Drücke [SHIFT]",
   "constructionwand.tooltip.cores": "Kristalle im Stab:",

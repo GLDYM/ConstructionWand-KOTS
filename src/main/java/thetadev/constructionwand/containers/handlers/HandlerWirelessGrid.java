@@ -13,7 +13,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
-import thetadev.constructionwand.ConstructionWand;
 import thetadev.constructionwand.api.IContainerHandler;
 import thetadev.constructionwand.containers.ContainerTrace;
 

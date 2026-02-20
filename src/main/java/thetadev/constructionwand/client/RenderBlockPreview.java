@@ -15,14 +15,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import thetadev.constructionwand.basics.WandUtil;
-import thetadev.constructionwand.items.wand.ItemWand;
 import thetadev.constructionwand.network.PacketRequestPreview;
 import thetadev.constructionwand.ConstructionWand;
 
 import java.util.Set;
 
-public class RenderBlockPreview
-{
+public class RenderBlockPreview {
     private BlockHitResult lastRayTraceResult = null;
     private ItemStack lastWand = ItemStack.EMPTY;
     public Set<BlockPos> undoBlocks;
@@ -41,7 +39,7 @@ public class RenderBlockPreview
         ItemStack wand = WandUtil.holdingWand(player);
         if(wand == null) return;
 
-        if (ClientEvents.isOptKeyDown()) {
+        if (KeybindHandler.isOptKeyDown()) {
             blocks = undoBlocks;
             colorG = 1;
         }

@@ -6,6 +6,9 @@
   "item.constructionwand.core_angel": "Angel Wand Core",
   "item.constructionwand.core_destruction": "Destruction Wand Core",
 
+  "key.constructionwand.category": "Construction Wand",
+  "key.constructionwand.wand_option": "Wand Options",
+
   "constructionwand.tooltip.blocks": "Max. %d blocks",
   "constructionwand.tooltip.shift": "Press [SHIFT]",
   "constructionwand.tooltip.cores": "Wand cores:",
