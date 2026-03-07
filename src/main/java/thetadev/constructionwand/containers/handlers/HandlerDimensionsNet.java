@@ -6,10 +6,11 @@ import net.minecraft.world.item.ItemStack;
 import thetadev.constructionwand.api.IContainerHandler;
 import thetadev.constructionwand.containers.ContainerTrace;
 import thetadev.constructionwand.items.wand.ItemWand;
-import com.wintercogs.beyonddimensions.Api.DataBase.DimensionsNet;
-import com.wintercogs.beyonddimensions.Api.DataBase.Storage.UnifiedStorage;
-import com.wintercogs.beyonddimensions.Api.DataBase.Stack.IStackKey;
-import com.wintercogs.beyonddimensions.Api.DataBase.Stack.ItemStackKey;
+
+import com.wintercogs.beyonddimensions.api.dimensionnet.DimensionsNet;
+import com.wintercogs.beyonddimensions.api.dimensionnet.UnifiedStorage;
+import com.wintercogs.beyonddimensions.api.storage.key.IStackKey;
+import com.wintercogs.beyonddimensions.api.storage.key.impl.ItemStackKey;
 
 public class HandlerDimensionsNet implements IContainerHandler {
     // This Handler does not related with any specific Item, it works as long as the player has a Dimensions Net.

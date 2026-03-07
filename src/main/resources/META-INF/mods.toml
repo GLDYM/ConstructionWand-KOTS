@@ -13,13 +13,19 @@ Construction Wands KOTS, added more compatibility and QoL Change.
 '''
 [[dependencies.constructionwand]]
     modId="forge"
-mandatory = true
-versionRange = "[46,)"
-ordering = "NONE"
+    mandatory = true
+    versionRange = "[46,)"
+    ordering = "NONE"
     side="BOTH"
 [[dependencies.constructionwand]]
     modId="minecraft"
-mandatory = true
-versionRange = "[1.20, 1.21)"
-ordering = "NONE"
+    mandatory = true
+    versionRange = "[1.20, 1.21)"
+    ordering = "NONE"
+    side="BOTH"
+[[dependencies.constructionwand]]
+    modId="beyonddimensions"
+    mandatory = false
+    versionRange = "[0.7.0, 1.0.0)"
+    ordering = "NONE"
     side="BOTH"
