@@ -1,10 +1,10 @@
 modLoader = "javafml"
-loaderVersion = "[46,)"
-license = "MIT License"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
 [[mods]]
-modId="constructionwand"
-version="${file.jarVersion}"
-displayName="Construction Wand KOTS"
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
 displayURL="https://github.com/GLDYM/ConstructionWand-KOTS"
 logoFile="icon.png"
 authors="Polaris_Light"
@@ -26,6 +26,6 @@ Construction Wands KOTS, added more compatibility and QoL Change.
 [[dependencies.constructionwand]]
     modId="beyonddimensions"
     mandatory = false
-    versionRange = "[0.7.0, 1.0.0)"
+    versionRange = "[0.7.0,)"
     ordering = "NONE"
     side="BOTH"
