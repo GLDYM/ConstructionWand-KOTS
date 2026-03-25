@@ -15,7 +15,7 @@ import dev.polaris_light.constructionwand.containers.ContainerTrace;
 public class HandlerWirelessTerminal implements IContainerHandler {
 
     @Override
-    public boolean matches(Player player, ItemStack inventoryStack) {
+    public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
         return inventoryStack.getItem() instanceof WirelessTerminalItem;
     }
 
@@ -73,13 +73,13 @@ public class HandlerWirelessTerminal implements IContainerHandler {
         if (terminal.getItem() instanceof WirelessTerminalItem wireless) {
             try {
                 WirelessTerminalMenuHost host = new WirelessTerminalMenuHost(
+                    wireless,
                     player,
                     null,
-                    terminal,
                     (p, menu) -> {}
                 );
             
-                if (!host.rangeCheck()) {
+                if (host.getActionableNode() == null) {
                     player.displayClientMessage(PlayerMessages.OutOfRange.text(), true);
                     return null;
                 }

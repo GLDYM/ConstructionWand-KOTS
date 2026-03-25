@@ -1,6 +1,8 @@
 package dev.polaris_light.constructionwand.basics.option;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -50,15 +52,21 @@ public class WandOptions
     public final IOption<?>[] allOptions;
 
     public WandOptions(ItemStack wandStack) {
-        tag = wandStack.getOrCreateTagElement(TAG_ROOT);
+        CompoundTag root = wandStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        if (!root.contains(TAG_ROOT)) {
+            root.put(TAG_ROOT, new CompoundTag());
+        }
+        tag = root.getCompound(TAG_ROOT);
+        Runnable persist = () -> wandStack.set(DataComponents.CUSTOM_DATA, CustomData.of(root));
+        persist.run();
 
-        cores = new WandUpgradesSelectable<>(tag, "cores", new CoreDefault());
+        cores = new WandUpgradesSelectable<>(tag, "cores", new CoreDefault(), persist);
 
-        lock = new OptionEnum<>(tag, "lock", LOCK.class, LOCK.NOLOCK);
-        direction = new OptionEnum<>(tag, "direction", DIRECTION.class, DIRECTION.TARGET);
-        replace = new OptionBoolean(tag, "replace", true);
-        match = new OptionEnum<>(tag, "match", MATCH.class, MATCH.SIMILAR);
-        random = new OptionBoolean(tag, "random", false);
+        lock = new OptionEnum<>(tag, "lock", LOCK.class, LOCK.NOLOCK, persist);
+        direction = new OptionEnum<>(tag, "direction", DIRECTION.class, DIRECTION.TARGET, persist);
+        replace = new OptionBoolean(tag, "replace", true, persist);
+        match = new OptionEnum<>(tag, "match", MATCH.class, MATCH.SIMILAR, persist);
+        random = new OptionBoolean(tag, "random", false, persist);
 
         allOptions = new IOption[]{cores, lock, direction, replace, match, random};
     }

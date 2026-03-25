@@ -1,58 +1,56 @@
 package dev.polaris_light.constructionwand.network;
 
+import dev.polaris_light.constructionwand.ConstructionWand;
+import dev.polaris_light.constructionwand.items.wand.ItemWand;
+import dev.polaris_light.constructionwand.wand.WandJob;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
-import dev.polaris_light.constructionwand.items.wand.ItemWand;
-import dev.polaris_light.constructionwand.wand.WandJob;
-import dev.polaris_light.constructionwand.ConstructionWand;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.Set;
-import java.util.function.Supplier;
 
+public record PacketRequestPreview(BlockHitResult rtr, ItemStack wand) implements CustomPacketPayload {
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketRequestPreview> CODEC = CustomPacketPayload.codec(
+            PacketRequestPreview::encode,
+            PacketRequestPreview::new);
+    public static final Type<PacketRequestPreview> ID = new Type<>(ConstructionWand.loc("request_preview"));
 
-public class PacketRequestPreview {
-    private final BlockHitResult rtr;
-    private final ItemStack wand;
-
-    public PacketRequestPreview(BlockHitResult rtr, ItemStack wand) {
-        this.rtr = rtr;
-        this.wand = wand;
+    public PacketRequestPreview(RegistryFriendlyByteBuf buffer) {
+        this(buffer.readBlockHitResult(), ItemStack.STREAM_CODEC.decode(buffer));
     }
 
-    public static void encode(PacketRequestPreview msg, FriendlyByteBuf buf) {
-        buf.writeItem(msg.wand);
-        buf.writeBlockHitResult(msg.rtr);
+    public static void encode(PacketRequestPreview msg, RegistryFriendlyByteBuf buffer) {
+        buffer.writeBlockHitResult(msg.rtr);
+        ItemStack.STREAM_CODEC.encode(buffer, msg.wand);
     }
 
-    public static PacketRequestPreview decode(FriendlyByteBuf buf) {
-        ItemStack wand = buf.readItem();
-        BlockHitResult rtr = buf.readBlockHitResult();
-        return new PacketRequestPreview(rtr, wand);
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return ID;
     }
 
-    public static class Handler
-    {
-        public static void handle(PacketRequestPreview msg, Supplier<NetworkEvent.Context> ctx) {
-            ctx.get().enqueueWork(() -> {
-                ServerPlayer player = ctx.get().getSender();
-                if (player == null) return;
+    public static class Handler {
+        public static void handle(final PacketRequestPreview msg, final IPayloadContext ctx) {
+            ctx.enqueueWork(() -> {
+                        if (ctx.flow().isServerbound() && ctx.player() instanceof ServerPlayer player) {
+                            WandJob job = ItemWand.getWandJob(player, player.level(), msg.rtr, msg.wand);
+                            if (job == null) return;
 
-                WandJob job = ItemWand.getWandJob(player, player.level(), msg.rtr, msg.wand);
-                Set<BlockPos> blocks = job.getBlockPositions();
-
-                ConstructionWand.instance.HANDLER.send(
-                    PacketDistributor.PLAYER.with(() -> player),
-                    new PacketPreviewResult(blocks)
-                );
-            });
-            ctx.get().setPacketHandled(true);
+                            Set<BlockPos> blocks = job.getBlockPositions();
+                            ModMessages.sendToPlayer(new PacketPreviewResult(blocks), player);
+                        }
+                    })
+                    .exceptionally(e -> {
+                        ctx.disconnect(Component.translatable("constructionwand.networking.preview_request.failed", e.getMessage()));
+                        return null;
+                    });
         }
     }
 }

@@ -1,11 +1,10 @@
 package dev.polaris_light.constructionwand.containers.handlers;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.ContainerHelper;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import dev.polaris_light.constructionwand.ConstructionWand;
@@ -18,7 +17,7 @@ public class HandlerShulkerbox implements IContainerHandler
     private final int SLOTS = 27;
 
     @Override
-    public boolean matches(Player player, ItemStack inventoryStack) {
+    public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
         return inventoryStack != null && inventoryStack.getCount() == 1 && Block.byItem(inventoryStack.getItem()) instanceof ShulkerBoxBlock;
     }
 
@@ -35,7 +34,7 @@ public class HandlerShulkerbox implements IContainerHandler
             if(WandUtil.stackEquals(stack, itemStack)) {
                 count += stack.getCount();
             } else {
-                count += ConstructionWand.instance.containerManager.countItems(player, trace, itemStack, stack);
+                count += ConstructionWand.containerManager.countItems(player, trace, itemStack, stack);
             }
         }
 
@@ -56,7 +55,7 @@ public class HandlerShulkerbox implements IContainerHandler
                 if(count == 0) break;
             } else {
                 int before = count;
-                count = ConstructionWand.instance.containerManager.useItems(player, trace, itemStack, stack, count);
+                count = ConstructionWand.containerManager.useItems(player, trace, itemStack, stack, count);
                 if(count < before) {
                     changed = true;
                     if(count == 0) break;
@@ -73,21 +72,16 @@ public class HandlerShulkerbox implements IContainerHandler
 
     private NonNullList<ItemStack> getItemList(ItemStack itemStack) {
         NonNullList<ItemStack> itemStacks = NonNullList.withSize(SLOTS, ItemStack.EMPTY);
-        CompoundTag rootTag = itemStack.getTag();
-        if(rootTag != null && rootTag.contains("BlockEntityTag", Tag.TAG_COMPOUND)) {
-            CompoundTag entityTag = rootTag.getCompound("BlockEntityTag");
-            if(entityTag.contains("Items", Tag.TAG_LIST)) {
-                ContainerHelper.loadAllItems(entityTag, itemStacks);
+        ItemContainerContents contents = itemStack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+        contents.stream().forEach(stack -> {
+            if (stack != null && !stack.isEmpty()) {
+                itemStacks.add(stack);
             }
-        }
+        });
         return itemStacks;
     }
 
     private void setItemList(ItemStack itemStack, NonNullList<ItemStack> itemStacks) {
-        CompoundTag rootTag = itemStack.getOrCreateTag();
-        if(!rootTag.contains("BlockEntityTag", Tag.TAG_COMPOUND)) {
-            rootTag.put("BlockEntityTag", new CompoundTag());
-        }
-        ContainerHelper.saveAllItems(rootTag.getCompound("BlockEntityTag"), itemStacks);
+        itemStack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(itemStacks));
     }
 }

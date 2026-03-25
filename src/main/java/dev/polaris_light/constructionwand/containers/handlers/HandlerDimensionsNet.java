@@ -17,7 +17,7 @@ public class HandlerDimensionsNet implements IContainerHandler {
     // For every itemStack, matches method will return true, but the signature confirms only one net used.
 
     @Override
-    public boolean matches(Player player, ItemStack inventoryStack) {
+    public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
         if (!(inventoryStack.getItem() instanceof ItemWand)) return false;
         DimensionsNet net = DimensionsNet.getNetFromPlayer(player);
         return net != null;

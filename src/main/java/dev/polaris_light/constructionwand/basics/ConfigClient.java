@@ -1,13 +1,13 @@
 package dev.polaris_light.constructionwand.basics;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ConfigClient
 {
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    public static final ForgeConfigSpec.BooleanValue SHIFTOPT_MODE;
-    public static final ForgeConfigSpec.BooleanValue SHIFTOPT_GUI;
+    public static final ModConfigSpec.BooleanValue SHIFTOPT_MODE;
+    public static final ModConfigSpec.BooleanValue SHIFTOPT_GUI;
 
     static {
         BUILDER.comment("This is the Client config for ConstructionWand.",
@@ -25,5 +25,5 @@ public class ConfigClient
         BUILDER.pop();
     }
 
-    public static final ForgeConfigSpec SPEC = BUILDER.build();
+    public static final ModConfigSpec SPEC = BUILDER.build();
 }

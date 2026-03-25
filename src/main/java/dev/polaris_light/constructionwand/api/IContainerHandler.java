@@ -6,9 +6,9 @@ import dev.polaris_light.constructionwand.containers.ContainerTrace;
 
 public interface IContainerHandler
 {
-    boolean matches(Player player, ItemStack inventoryStack);
+    boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack);
 
-    // Ender Chest is 0
+    // Ender Chest is 0, Invaild ids -1
     int getSignature(Player player, ItemStack inventoryStack);
 
     int countItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack);

@@ -1,12 +1,13 @@
 package dev.polaris_light.constructionwand.containers.handlers;
 
 import com.tom.storagemod.Config;
-import com.tom.storagemod.tile.StorageTerminalBlockEntity;
+import com.tom.storagemod.Content;
+import com.tom.storagemod.block.entity.StorageTerminalBlockEntity;
+import com.tom.storagemod.components.WorldPos;
 import com.tom.storagemod.item.AdvWirelessTerminalItem;
-import com.tom.storagemod.util.StoredItemStack;
+import com.tom.storagemod.inventory.StoredItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,26 +22,20 @@ import dev.polaris_light.constructionwand.containers.ContainerTrace;
 public class HandlerAdvWirelessTerminal implements IContainerHandler {
 
     @Override
-    public boolean matches(Player player, ItemStack inventoryStack) {
+    public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
         return inventoryStack.getItem() instanceof AdvWirelessTerminalItem;
     }
 
     @Override
     public int getSignature(Player player, ItemStack inventoryStack) {
-        CompoundTag tag = inventoryStack.getTag();
-        if (tag == null) return -1;
+        WorldPos pos = inventoryStack.get(Content.boundPosComponent.get());
 
-        if (!tag.contains("BindX") || 
-            !tag.contains("BindY") || 
-            !tag.contains("BindZ") || 
-            !tag.contains("BindDim")) {
-            return -1;
-        }
+        if (pos == null) return -1;
 
-        int x = tag.getInt("BindX");
-        int y = tag.getInt("BindY");
-        int z = tag.getInt("BindZ");
-        String dim = tag.getString("BindDim");
+        int x = pos.pos().getX();
+        int y = pos.pos().getY();
+        int z = pos.pos().getZ();
+        String dim = pos.dim().location().toString();
         return (x * 31 + y * 17 + z) ^ dim.hashCode();
     }
 
@@ -52,7 +47,7 @@ public class HandlerAdvWirelessTerminal implements IContainerHandler {
         int found = 0;
         for (var entry : terminal.getStacks().entrySet()) {
             if (WandUtil.stackEquals(entry.getKey().getStack(), itemStack)) {
-                found += entry.getValue();
+                found += entry.getValue().getQuantity();
                 if (found >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
             }
         }
@@ -70,26 +65,21 @@ public class HandlerAdvWirelessTerminal implements IContainerHandler {
     }
 
     private StorageTerminalBlockEntity resolveTerminal(Player player, ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag == null) return null;
+        WorldPos pos = stack.get(Content.boundPosComponent.get());
 
-        if (!tag.contains("BindX") || 
-            !tag.contains("BindY") || 
-            !tag.contains("BindZ") || 
-            !tag.contains("BindDim")) {
-            return null;
-        }
+        if (pos == null) return null;
 
-        int x = tag.getInt("BindX");
-        int y = tag.getInt("BindY");
-        int z = tag.getInt("BindZ");
-        BlockPos pos = new BlockPos(x, y, z);
-        String dim = tag.getString("BindDim");
+        int x = pos.pos().getX();
+        int y = pos.pos().getY();
+        int z = pos.pos().getZ();
+        BlockPos blockPos = new BlockPos(x, y, z);
+        String dim = pos.dim().location().toString();
 
         Level termWorld = player.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(dim)));
-        if (termWorld == null || !termWorld.isLoaded(pos)) return null;
+        if (termWorld == null || !termWorld.isLoaded(blockPos)) return null;
 
-        BlockEntity be = termWorld.getBlockEntity(pos);
+        BlockEntity be = termWorld.getBlockEntity(blockPos);
+
         if (be instanceof StorageTerminalBlockEntity terminal) {
             terminal.updateServer();
             return canInteractWith(terminal, player) ? terminal : null;
@@ -103,7 +93,7 @@ public class HandlerAdvWirelessTerminal implements IContainerHandler {
 
         int beaconLevel = terminal.getBeaconLevel();
 		if(Config.get().wirelessTermBeaconLvl != -1 && beaconLevel >= Config.get().wirelessTermBeaconLvl && termReach > 0) {
-			if(Config.get().wirelessTermBeaconLvlDim != -1 && beaconLevel >= Config.get().wirelessTermBeaconLvlDim) return true;
+            if(Config.get().wirelessTermBeaconLvlCrossDim != -1 && beaconLevel >= Config.get().wirelessTermBeaconLvlCrossDim) return true;
 			else return player.level() == terminal.getLevel();
 		}
 

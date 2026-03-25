@@ -7,19 +7,29 @@ public class OptionBoolean implements IOption<Boolean>
     private final CompoundTag tag;
     private final String key;
     private final boolean enabled;
+    private final Runnable onChanged;
     private boolean value;
 
-    public OptionBoolean(CompoundTag tag, String key, boolean dval, boolean enabled) {
+    public OptionBoolean(CompoundTag tag, String key, boolean dval, boolean enabled, Runnable onChanged) {
         this.tag = tag;
         this.key = key;
         this.enabled = enabled;
+        this.onChanged = onChanged;
 
         if(tag.contains(key)) value = tag.getBoolean(key);
         else value = dval;
     }
 
+    public OptionBoolean(CompoundTag tag, String key, boolean dval, boolean enabled) {
+        this(tag, key, dval, enabled, null);
+    }
+
     public OptionBoolean(CompoundTag tag, String key, boolean dval) {
         this(tag, key, dval, true);
+    }
+
+    public OptionBoolean(CompoundTag tag, String key, boolean dval, Runnable onChanged) {
+        this(tag, key, dval, true, onChanged);
     }
 
     @Override
@@ -47,6 +57,7 @@ public class OptionBoolean implements IOption<Boolean>
         if(!enabled) return;
         value = val;
         tag.putBoolean(key, value);
+        if (onChanged != null) onChanged.run();
     }
 
     @Override

@@ -1,9 +1,10 @@
 package dev.polaris_light.constructionwand.containers;
 
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerAdvWirelessTerminal;
-import dev.polaris_light.constructionwand.containers.handlers.HandlerBotania;
+// UNSUPPORTED: Botania has no 1.21.1 version yet
+// import dev.polaris_light.constructionwand.containers.handlers.HandlerBotania;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerBundle;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerCapability;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerDimensionsNet;
@@ -20,43 +21,44 @@ public class ContainerRegistrar
     public static void register() {
         // Normal backpack will be recognized as Capability
         if(ModList.get().isLoaded("l2backpack")) {
-            ConstructionWand.instance.containerManager.register(new HandlerLightland());
+            ConstructionWand.containerManager.register(new HandlerLightland());
             ConstructionWand.LOGGER.info("L2Backpack integration added");
         }
 
-        ConstructionWand.instance.containerManager.register(new HandlerCapability());
-        ConstructionWand.instance.containerManager.register(new HandlerShulkerbox());
-        ConstructionWand.instance.containerManager.register(new HandlerBundle());
-
-        if(ModList.get().isLoaded("botania")) {
-            ConstructionWand.instance.containerManager.register(new HandlerBotania());
-            ConstructionWand.LOGGER.info("Botania integration added");
-        }
+        // UNSUPPORTED: Botania has no 1.21.1 version - uncomment when available
+        // if(ModList.get().isLoaded("botania")) {
+        //     ConstructionWand.containerManager.register(new HandlerBotania());
+        //     ConstructionWand.LOGGER.info("Botania integration added");
+        // }
 
         if(ModList.get().isLoaded("curios")) {
             ConstructionWand.LOGGER.info("Curios integration added");
         }
 
         if(ModList.get().isLoaded("ae2")) {
-            ConstructionWand.instance.containerManager.register(new HandlerPortableCell());
-            ConstructionWand.instance.containerManager.register(new HandlerWirelessTerminal());
+            ConstructionWand.containerManager.register(new HandlerPortableCell());
+            ConstructionWand.containerManager.register(new HandlerWirelessTerminal());
             ConstructionWand.LOGGER.info("Applied Energistics 2 integration added");
         }
 
         if(ModList.get().isLoaded("toms_storage")) {
-            ConstructionWand.instance.containerManager.register(new HandlerAdvWirelessTerminal());
+            ConstructionWand.containerManager.register(new HandlerAdvWirelessTerminal());
             ConstructionWand.LOGGER.info("Tom's Simple Storage integration added");
         }
 
         if(ModList.get().isLoaded("refinedstorage")) {
-            ConstructionWand.instance.containerManager.register(new HandlerWirelessGrid());
+            ConstructionWand.containerManager.register(new HandlerWirelessGrid());
             ConstructionWand.LOGGER.info("Refined Storage integration added");
         }
 
         if(ModList.get().isLoaded("beyonddimensions")) {
-            ConstructionWand.instance.containerManager.register(new HandlerDimensionsNet());
-            ConstructionWand.instance.containerManager.register(new HandlerNetTerminal());
+            ConstructionWand.containerManager.register(new HandlerDimensionsNet());
+            ConstructionWand.containerManager.register(new HandlerNetTerminal());
             ConstructionWand.LOGGER.info("Beyond Dimensions integration added");
         }
+
+        ConstructionWand.containerManager.register(new HandlerShulkerbox());
+        ConstructionWand.containerManager.register(new HandlerBundle());
+        ConstructionWand.containerManager.register(new HandlerCapability());
     }
 }

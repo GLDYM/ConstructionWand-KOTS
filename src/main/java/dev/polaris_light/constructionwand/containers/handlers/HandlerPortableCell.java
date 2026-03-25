@@ -15,7 +15,7 @@ import dev.polaris_light.constructionwand.containers.ContainerTrace;
 public class HandlerPortableCell implements IContainerHandler {
 
     @Override
-    public boolean matches(Player player, ItemStack inventoryStack) {
+    public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
         return inventoryStack.getItem() instanceof PortableCellItem;
     }
 
@@ -67,10 +67,9 @@ public class HandlerPortableCell implements IContainerHandler {
         if (cell.getItem() instanceof PortableCellItem c) {
             try {
                 PortableCellMenuHost host = new PortableCellMenuHost(
+                    c,
                     player,
                     null,
-                    c,
-                    cell,
                     (p, menu) -> {}
                 );
 

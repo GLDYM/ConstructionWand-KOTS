@@ -6,15 +6,16 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.basics.ConfigClient;
 import dev.polaris_light.constructionwand.basics.WandUtil;
 import dev.polaris_light.constructionwand.basics.option.WandOptions;
 import dev.polaris_light.constructionwand.items.wand.ItemWand;
+import dev.polaris_light.constructionwand.network.ModMessages;
 import dev.polaris_light.constructionwand.network.PacketQueryUndo;
 import dev.polaris_light.constructionwand.network.PacketWandOption;
 
@@ -44,17 +45,19 @@ public class KeybindHandler {
         if(optPressed != optState || leftShiftPressed != leftShiftState) {
             optPressed = optState;
             leftShiftPressed = leftShiftState;
-            PacketQueryUndo packet = new PacketQueryUndo(optPressed, leftShiftPressed);
-            ConstructionWand.instance.HANDLER.sendToServer(packet);
+            ModMessages.sendToServer(new PacketQueryUndo(optPressed, leftShiftPressed));
             //ConstructionWand.LOGGER.debug("OPT key update: " + optPressed);
         }
     }
 
-    // Sneak+(OPT)+Scroll to change direction lock
+    // (Sneak)+OPT+Scroll to change direction lock
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void MouseScrollEvent(InputEvent.MouseScrollingEvent event) {
         Player player = Minecraft.getInstance().player;
-        double scroll = event.getScrollDelta();
+        double scroll = event.getScrollDeltaY();
+        if (scroll == 0.0D) {
+            scroll = event.getScrollDeltaX();
+        }
 
         if(!modeKeyCombDown() || scroll == 0) return;
 
@@ -63,11 +66,11 @@ public class KeybindHandler {
 
         WandOptions wandOptions = new WandOptions(wand);
         wandOptions.lock.next(scroll < 0);
-        ConstructionWand.instance.HANDLER.sendToServer(new PacketWandOption(wandOptions.lock, true));
+        ModMessages.sendToServer(new PacketWandOption(wandOptions.lock, true));
         event.setCanceled(true);
     }
 
-    // Sneak+(OPT)+Left click wand to change core
+    // (Sneak)+OPT+Left click wand to change core
     @SubscribeEvent
     public void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
         Player player = event.getEntity();
@@ -79,10 +82,10 @@ public class KeybindHandler {
 
         WandOptions wandOptions = new WandOptions(wand);
         wandOptions.cores.next();
-        ConstructionWand.instance.HANDLER.sendToServer(new PacketWandOption(wandOptions.cores, true));
+        ModMessages.sendToServer(new PacketWandOption(wandOptions.cores, true));
     }
 
-    // Sneak+(OPT)+Right click wand to open GUI
+    // (Sneak)+OPT+Right click wand to open GUI
     @SubscribeEvent
     public void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
         if(event.getSide().isServer()) return;

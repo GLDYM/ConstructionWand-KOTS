@@ -3,6 +3,7 @@ package dev.polaris_light.constructionwand.wand;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -102,7 +103,7 @@ public class WandJob
                     // If the item cant be taken, undo the placement
                     if(wandSupplier.takeItemStack(snapshot.getRequiredItems()) == 0) {
                         executed.add(snapshot);
-                        wand.hurtAndBreak(1, player, e -> e.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+                        wand.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
                     }
                     else {
                         ConstructionWand.LOGGER.info("Item could not be taken. Remove block: " +
@@ -121,7 +122,7 @@ public class WandJob
             world.playSound(null, player.blockPosition(), sound.getPlaceSound(), SoundSource.BLOCKS, sound.volume, sound.pitch);
 
             // Add to job history for undo
-            ConstructionWand.instance.undoHistory.add(player, world, placeSnapshots);
+            ConstructionWand.undoHistory.add(player, world, placeSnapshots);
         }
 
         return !placeSnapshots.isEmpty();

@@ -1,23 +1,15 @@
 package dev.polaris_light.constructionwand.basics;
 
-import net.minecraft.core.Registry;
+import dev.polaris_light.constructionwand.ConstructionWand;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.stats.StatFormatter;
-import net.minecraft.stats.Stats;
-import dev.polaris_light.constructionwand.ConstructionWand;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class ModStats
-{
-    public static final ResourceLocation USE_WAND = ResourceLocation.fromNamespaceAndPath(ConstructionWand.MODID, "use_wand");
+import java.util.function.Supplier;
 
-    public static void register() {
-        registerStat(USE_WAND);
-    }
+public class ModStats {
+    public static final DeferredRegister<ResourceLocation> CUSTOM_STATS = DeferredRegister.create(BuiltInRegistries.CUSTOM_STAT, ConstructionWand.MODID);
 
-    private static void registerStat(ResourceLocation registryName) {
-        // Compare with net.minecraft.stats.Stats#registerCustom
-        Registry.register(BuiltInRegistries.CUSTOM_STAT, registryName.getPath(), registryName);
-        Stats.CUSTOM.get(registryName, StatFormatter.DEFAULT);
-    }
+    public static final ResourceLocation USE_WAND = ConstructionWand.loc("use_wand");
+    public static final Supplier<ResourceLocation> USE_WAND_STAT = CUSTOM_STATS.register("use_wand", () -> USE_WAND);
 }

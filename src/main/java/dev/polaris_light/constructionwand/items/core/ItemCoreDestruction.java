@@ -13,7 +13,7 @@ public class ItemCoreDestruction extends ItemCore
 
     @Override
     public int getColor() {
-        return 0xFF0000;
+        return 0xFFFF0000;
     }
 
     @Override

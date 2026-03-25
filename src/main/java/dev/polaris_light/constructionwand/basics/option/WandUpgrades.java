@@ -6,7 +6,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.api.IWandUpgrade;
 
@@ -18,16 +18,22 @@ public class WandUpgrades<T extends IWandUpgrade>
     protected final String key;
     protected final ArrayList<T> upgrades;
     protected final T dval;
+    protected final Runnable onChanged;
 
-    public WandUpgrades(CompoundTag tag, String key, T dval) {
+    public WandUpgrades(CompoundTag tag, String key, T dval, Runnable onChanged) {
         this.tag = tag;
         this.key = key;
         this.dval = dval;
+        this.onChanged = onChanged;
 
         upgrades = new ArrayList<>();
         if(dval != null) upgrades.add(0, dval);
 
         deserialize();
+    }
+
+    public WandUpgrades(CompoundTag tag, String key, T dval) {
+        this(tag, key, dval, null);
     }
 
     protected void deserialize() {
@@ -36,7 +42,7 @@ public class WandUpgrades<T extends IWandUpgrade>
 
         for(int i = 0; i < listnbt.size(); i++) {
             String str = listnbt.getString(i);
-            Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(str));
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(str));
 
             T data;
             try {
@@ -59,6 +65,7 @@ public class WandUpgrades<T extends IWandUpgrade>
             listnbt.add(StringTag.valueOf(item.getRegistryName().toString()));
         }
         tag.put(key, listnbt);
+        if (onChanged != null) onChanged.run();
     }
 
     public boolean addUpgrade(T upgrade) {

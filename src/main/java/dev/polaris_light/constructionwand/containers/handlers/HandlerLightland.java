@@ -3,10 +3,11 @@ package dev.polaris_light.constructionwand.containers.handlers;
 import dev.xkmc.l2backpack.content.capability.PickupModeCap;
 import dev.xkmc.l2backpack.content.capability.InvPickupCap;
 import dev.xkmc.l2backpack.content.capability.PickupTrace;
+import dev.xkmc.l2backpack.init.registrate.LBMisc;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.api.IContainerHandler;
 import dev.polaris_light.constructionwand.basics.WandUtil;
@@ -15,7 +16,7 @@ import dev.polaris_light.constructionwand.containers.ContainerTrace;
 public class HandlerLightland implements IContainerHandler {
 
     @Override
-    public boolean matches(Player player, ItemStack inventoryStack) {
+    public boolean matches(Player player, ItemStack itemStack, ItemStack inventoryStack) {
         return resolveInvCap(inventoryStack) != null;
     }
 
@@ -42,7 +43,7 @@ public class HandlerLightland implements IContainerHandler {
                 found += stack.getCount();
                 if (found >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
             } else {
-                found += ConstructionWand.instance.containerManager.countItems(player, trace, itemStack, stack);
+                found += ConstructionWand.containerManager.countItems(player, trace, itemStack, stack);
                 if (found >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
             }
         }
@@ -68,7 +69,7 @@ public class HandlerLightland implements IContainerHandler {
                 remaining -= extracted.getCount();
                 if (remaining <= 0) return 0;
             } else {
-                remaining = ConstructionWand.instance.containerManager.useItems(player, trace, itemStack, stack, remaining);
+                remaining = ConstructionWand.containerManager.useItems(player, trace, itemStack, stack, remaining);
                 if (remaining <= 0) return 0;
             }
         }
@@ -77,10 +78,9 @@ public class HandlerLightland implements IContainerHandler {
     }
 
     private InvPickupCap<?> resolveInvCap(ItemStack stack) {
-        return stack.getCapability(PickupModeCap.TOKEN)
-            .resolve()
-            .filter(c -> c instanceof InvPickupCap<?>)
-            .map(c -> (InvPickupCap<?>) c)
-            .orElse(null);
+        if (stack == null || stack.isEmpty()) return null;
+
+        PickupModeCap cap = stack.getCapability(LBMisc.PICKUP);
+        return cap instanceof InvPickupCap<?> invPickupCap ? invPickupCap : null;
     }
 }

@@ -13,7 +13,7 @@ public class ItemCoreAngel extends ItemCore
 
     @Override
     public int getColor() {
-        return 0xE9B115;
+        return 0xFFE9B115;
     }
 
     @Override

@@ -10,20 +10,30 @@ public class OptionEnum<E extends Enum<E>> implements IOption<E>
     private final Class<E> enumClass;
     private final boolean enabled;
     private final E dval;
+    private final Runnable onChanged;
     private E value;
 
-    public OptionEnum(CompoundTag tag, String key, Class<E> enumClass, E dval, boolean enabled) {
+    public OptionEnum(CompoundTag tag, String key, Class<E> enumClass, E dval, boolean enabled, Runnable onChanged) {
         this.tag = tag;
         this.key = key;
         this.enumClass = enumClass;
         this.enabled = enabled;
         this.dval = dval;
+        this.onChanged = onChanged;
 
         value = Enums.getIfPresent(enumClass, tag.getString(key).toUpperCase()).or(dval);
     }
 
+    public OptionEnum(CompoundTag tag, String key, Class<E> enumClass, E dval, boolean enabled) {
+        this(tag, key, enumClass, dval, enabled, null);
+    }
+
     public OptionEnum(CompoundTag tag, String key, Class<E> enumClass, E dval) {
         this(tag, key, enumClass, dval, true);
+    }
+
+    public OptionEnum(CompoundTag tag, String key, Class<E> enumClass, E dval, Runnable onChanged) {
+        this(tag, key, enumClass, dval, true, onChanged);
     }
 
     @Override
@@ -51,6 +61,7 @@ public class OptionEnum<E extends Enum<E>> implements IOption<E>
         if(!enabled) return;
         value = val;
         tag.putString(key, getValueString());
+        if (onChanged != null) onChanged.run();
     }
 
     @Override

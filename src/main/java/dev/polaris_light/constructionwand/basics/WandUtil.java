@@ -19,11 +19,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.BlockSnapshot;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.fml.ModList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.containers.ContainerManager;
 import dev.polaris_light.constructionwand.containers.ContainerTrace;
@@ -44,7 +44,7 @@ import java.util.function.Predicate;
 public class WandUtil
 {
     public static boolean stackEquals(ItemStack stackA, ItemStack stackB) {
-        return ItemStack.isSameItemSameTags(stackA, stackB);
+        return ItemStack.isSameItemSameComponents(stackA, stackB);
     }
 
     public static boolean stackEquals(ItemStack stackA, Item item) {
@@ -68,7 +68,8 @@ public class WandUtil
     }
 
     public static Vec3 entityPositionVec(Entity entity) {
-        return new Vec3(entity.getX(), entity.getY() - entity.getMyRidingOffset() + entity.getBbHeight() / 2, entity.getZ());
+        // TODO: Weird.
+        return new Vec3(entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ());
     }
 
     public static Vec3 blockPosVec(BlockPos pos) {
@@ -126,7 +127,7 @@ public class WandUtil
     public static boolean isTEAllowed(BlockState state) {
         if(!state.hasBlockEntity()) return true;
 
-        ResourceLocation name = ForgeRegistries.BLOCKS.getKey(state.getBlock());
+        ResourceLocation name = BuiltInRegistries.BLOCK.getKey(state.getBlock());
         if(name == null) return false;
 
         String fullId = name.toString();
@@ -147,7 +148,7 @@ public class WandUtil
         // Remove block if placeEvent is canceled
         BlockSnapshot snapshot = BlockSnapshot.create(world.dimension(), world, pos);
         BlockEvent.EntityPlaceEvent placeEvent = new BlockEvent.EntityPlaceEvent(snapshot, block, player);
-        MinecraftForge.EVENT_BUS.post(placeEvent);
+        NeoForge.EVENT_BUS.post(placeEvent);
         if(placeEvent.isCanceled()) {
             world.removeBlock(pos, false);
             return false;
@@ -179,7 +180,7 @@ public class WandUtil
         }
 
         BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(world, pos, currentBlock, player);
-        MinecraftForge.EVENT_BUS.post(breakEvent);
+        NeoForge.EVENT_BUS.post(breakEvent);
         if(breakEvent.isCanceled()) return false;
 
         world.removeBlock(pos, false);
@@ -193,7 +194,7 @@ public class WandUtil
         int total = 0;
 
         if(player instanceof ServerPlayer serverPlayer) {
-            ContainerManager containerManager = ConstructionWand.instance.containerManager;
+            ContainerManager containerManager = ConstructionWand.containerManager;
             ContainerTrace trace = new ContainerTrace(serverPlayer);
             List<ItemStack> inventory = WandUtil.getFullInv(serverPlayer);
 

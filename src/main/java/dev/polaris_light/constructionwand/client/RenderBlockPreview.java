@@ -12,11 +12,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import dev.polaris_light.constructionwand.basics.WandUtil;
+import dev.polaris_light.constructionwand.network.ModMessages;
 import dev.polaris_light.constructionwand.network.PacketRequestPreview;
-import dev.polaris_light.constructionwand.ConstructionWand;
 
 import java.util.Set;
 
@@ -51,7 +52,7 @@ public class RenderBlockPreview {
                 || previewBlocks == null || previewBlocks.size() < 2) {
                 lastRayTraceResult = rtr;
                 lastWand = wand;
-                ConstructionWand.instance.HANDLER.sendToServer(new PacketRequestPreview(rtr, wand));
+                ModMessages.sendToServer(new PacketRequestPreview(rtr, wand));
             }
             blocks = previewBlocks;
         }
@@ -62,10 +63,10 @@ public class RenderBlockPreview {
         MultiBufferSource buffer = event.getMultiBufferSource();
         VertexConsumer lineBuilder = buffer.getBuffer(RenderType.LINES);
 
-        double partialTicks = event.getPartialTick();
-        double d0 = player.xOld + (player.getX() - player.xOld) * partialTicks;
-        double d1 = player.yOld + player.getEyeHeight() + (player.getY() - player.yOld) * partialTicks;
-        double d2 = player.zOld + (player.getZ() - player.zOld) * partialTicks;
+        Vec3 cameraPos = event.getCamera().getPosition();
+        double d0 = cameraPos.x;
+        double d1 = cameraPos.y;
+        double d2 = cameraPos.z;
 
         for(BlockPos block : blocks) {
             AABB aabb = new AABB(block).move(-d0, -d1, -d2);

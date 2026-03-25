@@ -7,6 +7,10 @@ public class WandUpgradesSelectable<T extends IWandUpgrade> extends WandUpgrades
 {
     private byte selector;
 
+    public WandUpgradesSelectable(CompoundTag tag, String key, T dval, Runnable onChanged) {
+        super(tag, key, dval, onChanged);
+    }
+
     public WandUpgradesSelectable(CompoundTag tag, String key, T dval) {
         super(tag, key, dval);
     }
@@ -79,5 +83,6 @@ public class WandUpgradesSelectable<T extends IWandUpgrade> extends WandUpgrades
 
     private void serializeSelector() {
         tag.putByte(key + "_sel", selector);
+        if (onChanged != null) onChanged.run();
     }
 }

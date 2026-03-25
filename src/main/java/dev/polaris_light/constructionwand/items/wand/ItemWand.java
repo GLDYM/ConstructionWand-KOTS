@@ -10,13 +10,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.generators.ModelFile;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.api.IWandCore;
 import dev.polaris_light.constructionwand.basics.WandUtil;
@@ -47,8 +48,8 @@ public abstract class ItemWand extends Item implements ICustomItemModel
 
         ItemStack stack = player.getItemInHand(hand);
 
-        if(ConstructionWand.instance.undoHistory.isUndoActive(player)) {
-            return ConstructionWand.instance.undoHistory.undo(player, world, context.getClickedPos()) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+        if(ConstructionWand.undoHistory.isUndoActive(player)) {
+            return ConstructionWand.undoHistory.undo(player, world, context.getClickedPos()) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         }
         else {
             WandJob job = getWandJob(player, world, new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), false), stack);
@@ -61,7 +62,7 @@ public abstract class ItemWand extends Item implements ICustomItemModel
     public InteractionResultHolder<ItemStack> use(@Nonnull Level world, Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if(!ConstructionWand.instance.undoHistory.isUndoActive(player)) {
+        if(!ConstructionWand.undoHistory.isUndoActive(player)) {
             if(world.isClientSide) return InteractionResultHolder.fail(stack);
 
             // Right click: Place angel block
@@ -80,7 +81,7 @@ public abstract class ItemWand extends Item implements ICustomItemModel
     }
 
     @Override
-    public boolean isCorrectToolForDrops(@Nonnull BlockState blockIn) {
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState blockIn) {
         return false;
     }
 
@@ -95,7 +96,7 @@ public abstract class ItemWand extends Item implements ICustomItemModel
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack itemstack, Level worldIn, @Nonnull List<Component> lines, @Nonnull TooltipFlag extraInfo) {
+    public void appendHoverText(@Nonnull ItemStack itemstack, TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag extraInfo) {
         WandOptions options = new WandOptions(itemstack);
         int limit = options.cores.get().getWandAction().getLimit(itemstack);
 

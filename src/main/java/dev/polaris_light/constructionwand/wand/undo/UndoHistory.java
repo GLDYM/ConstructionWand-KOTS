@@ -8,7 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.PacketDistributor;
+import dev.polaris_light.constructionwand.network.ModMessages;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.basics.ConfigServer;
 import dev.polaris_light.constructionwand.network.PacketUndoBlocks;
@@ -60,7 +60,7 @@ public class UndoHistory
         }
 
         PacketUndoBlocks packet = new PacketUndoBlocks(positions);
-        ConstructionWand.instance.HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), packet);
+        ModMessages.sendToPlayer(packet, (ServerPlayer) player);
     }
 
     public boolean isShiftActive(Player player) {

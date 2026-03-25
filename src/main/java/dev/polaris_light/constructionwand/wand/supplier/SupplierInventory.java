@@ -137,7 +137,7 @@ public class SupplierInventory implements IWandSupplier
         if (count == 0) return count;
         if (player instanceof ServerPlayer serverPlayer) {
 
-            ContainerManager containerManager = ConstructionWand.instance.containerManager;
+            ContainerManager containerManager = ConstructionWand.containerManager;
             // In use, ContainerTrace is just a placeholder
             ContainerTrace trace = new ContainerTrace(serverPlayer);
 

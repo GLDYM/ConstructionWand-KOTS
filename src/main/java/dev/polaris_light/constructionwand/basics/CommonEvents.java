@@ -1,13 +1,13 @@
 package dev.polaris_light.constructionwand.basics;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import dev.polaris_light.constructionwand.ConstructionWand;
 
-@Mod.EventBusSubscriber(modid = ConstructionWand.MODID)
+@EventBusSubscriber(modid = ConstructionWand.MODID)
 public class CommonEvents
 {
     @SubscribeEvent
@@ -19,6 +19,6 @@ public class CommonEvents
     public static void logOut(PlayerEvent.PlayerLoggedOutEvent e) {
         Player player = e.getEntity();
         if(player.level().isClientSide) return;
-        ConstructionWand.instance.undoHistory.removePlayer(player);
+        ConstructionWand.undoHistory.removePlayer(player);
     }
 }
