@@ -81,8 +81,7 @@ dependencies {
     compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
     localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
 
-    // Botania has no 1.21.1 build for this project yet.
-    // compileOnly "vazkii.botania:Botania:<no-1.21.1-version>:api"
+    compileOnly "vazkii.botania:botania-neoforge-1.21.1:${botania_version}"
 
     compileOnly "curse.maven:l2-backpack-620229:${l2backpack_fileid}"
     compileOnly "curse.maven:l2library-620203:${l2library_fileid}"

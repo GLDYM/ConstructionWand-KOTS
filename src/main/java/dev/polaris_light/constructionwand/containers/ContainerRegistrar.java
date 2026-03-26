@@ -3,8 +3,7 @@ package dev.polaris_light.constructionwand.containers;
 import net.neoforged.fml.ModList;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerAdvWirelessTerminal;
-// UNSUPPORTED: Botania has no 1.21.1 version yet
-// import dev.polaris_light.constructionwand.containers.handlers.HandlerBotania;
+import dev.polaris_light.constructionwand.containers.handlers.HandlerBotania;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerBundle;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerCapability;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerDimensionsNet;
@@ -25,11 +24,10 @@ public class ContainerRegistrar
             ConstructionWand.LOGGER.info("L2Backpack integration added");
         }
 
-        // UNSUPPORTED: Botania has no 1.21.1 version - uncomment when available
-        // if(ModList.get().isLoaded("botania")) {
-        //     ConstructionWand.containerManager.register(new HandlerBotania());
-        //     ConstructionWand.LOGGER.info("Botania integration added");
-        // }
+        if(ModList.get().isLoaded("botania")) {
+            ConstructionWand.containerManager.register(new HandlerBotania());
+            ConstructionWand.LOGGER.info("Botania integration added");
+        }
 
         if(ModList.get().isLoaded("curios")) {
             ConstructionWand.LOGGER.info("Curios integration added");
