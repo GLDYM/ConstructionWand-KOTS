@@ -1,6 +1,6 @@
 package dev.polaris_light.constructionwand.basics;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -23,7 +23,9 @@ public class ReplacementRegistry
             HashSet<Item> set = new HashSet<>();
 
             for(String id : ((String) key).split(";")) {
-                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(id));
+                Item item = BuiltInRegistries.ITEM.get(Identifier.tryParse(id))
+                        .map(holder -> holder.value())
+                        .orElse(Items.AIR);
                 if(item == null || item == Items.AIR) {
                     ConstructionWand.LOGGER.warn("Replacement Registry: Could not find item " + id);
                     continue;

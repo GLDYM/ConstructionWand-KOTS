@@ -2,7 +2,7 @@ package dev.polaris_light.constructionwand.basics;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -30,7 +30,6 @@ import dev.polaris_light.constructionwand.containers.ContainerTrace;
 import dev.polaris_light.constructionwand.items.wand.ItemWand;
 import dev.polaris_light.constructionwand.wand.WandItemUseContext;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
 
@@ -38,7 +37,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public class WandUtil
@@ -77,21 +75,22 @@ public class WandUtil
     }
 
     public static List<ItemStack> getHotbar(Player player) {
-        return player.getInventory().items.subList(0, 9);
+        return player.getInventory().getNonEquipmentItems().subList(0, 9);
     }
 
     public static List<ItemStack> getHotbarWithOffhand(Player player) {
-        ArrayList<ItemStack> inventory = new ArrayList<>(player.getInventory().items.subList(0, 9));
-        inventory.addAll(player.getInventory().offhand);
+        ArrayList<ItemStack> inventory = new ArrayList<>(player.getInventory().getNonEquipmentItems().subList(0, 9));
+        inventory.add(player.getOffhandItem());
         return inventory;
     }
 
     public static List<ItemStack> getMainInv(Player player) {
-        return player.getInventory().items.subList(9, player.getInventory().items.size());
+        return player.getInventory().getNonEquipmentItems().subList(9, player.getInventory().getNonEquipmentItems().size());
     }
 
+    // TODO: Empty?
     public static List<ItemStack> getArmor(Player player) {
-        return player.getInventory().armor;
+        return new ArrayList<>();
     }
 
 	public static List<ItemStack> getCuriosInv(Player player) {
@@ -113,9 +112,10 @@ public class WandUtil
 	}
 
     public static List<ItemStack> getFullInv(Player player) {
-        ArrayList<ItemStack> inventory = new ArrayList<>(player.getInventory().offhand);
-        inventory.addAll(player.getInventory().items);
-        inventory.addAll(player.getInventory().armor);
+        ArrayList<ItemStack> inventory = new ArrayList<>();
+        inventory.add(player.getOffhandItem());
+        inventory.addAll(player.getInventory().getNonEquipmentItems());
+        inventory.addAll(getArmor(player));
         inventory.addAll(getCuriosInv(player));
         return inventory;
     }
@@ -127,7 +127,7 @@ public class WandUtil
     public static boolean isTEAllowed(BlockState state) {
         if(!state.hasBlockEntity()) return true;
 
-        ResourceLocation name = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+        Identifier name = BuiltInRegistries.BLOCK.getKey(state.getBlock());
         if(name == null) return false;
 
         String fullId = name.toString();
@@ -188,7 +188,6 @@ public class WandUtil
     }
 
     public static int countItem(Player player, Item item) {
-        if(player.getInventory().items == null) return 0;
         if(player.isCreative()) return Integer.MAX_VALUE;
 
         int total = 0;
@@ -268,6 +267,6 @@ public class WandUtil
     }
 
     public static Direction fromVector(Vec3 vector) {
-        return Direction.getNearest(vector.x, vector.y, vector.z);
+        return Direction.getNearest((int) vector.x, (int) vector.y, (int) vector.z, null);
     }
 }

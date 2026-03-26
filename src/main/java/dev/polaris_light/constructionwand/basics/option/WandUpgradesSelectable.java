@@ -70,7 +70,7 @@ public class WandUpgradesSelectable<T extends IWandUpgrade> extends WandUpgrades
     protected void deserialize() {
         super.deserialize();
 
-        selector = tag.getByte(key + "_sel");
+        selector = tag.getByte(key + "_sel").orElse((byte) 0);
         fixSelector();
     }
 

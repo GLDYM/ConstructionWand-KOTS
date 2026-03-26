@@ -23,7 +23,7 @@ public class ContainerTrace {
 
     public ContainerTrace(ServerPlayer player) {
         this.player = player;
-        this.level = player.serverLevel();
+        this.level = (ServerLevel) player.level();
         visited.add(-1);
     }
 

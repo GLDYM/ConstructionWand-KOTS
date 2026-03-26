@@ -56,7 +56,7 @@ public class WandOptions
         if (!root.contains(TAG_ROOT)) {
             root.put(TAG_ROOT, new CompoundTag());
         }
-        tag = root.getCompound(TAG_ROOT);
+        tag = root.getCompound(TAG_ROOT).orElse(new CompoundTag());
         Runnable persist = () -> wandStack.set(DataComponents.CUSTOM_DATA, CustomData.of(root));
         persist.run();
 

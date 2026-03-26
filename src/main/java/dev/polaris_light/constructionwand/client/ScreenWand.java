@@ -1,19 +1,21 @@
 package dev.polaris_light.constructionwand.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+// import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+
+import javax.annotation.Nonnull;
+
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.basics.option.IOption;
 import dev.polaris_light.constructionwand.basics.option.WandOptions;
-import dev.polaris_light.constructionwand.network.ModMessages;
 import dev.polaris_light.constructionwand.network.PacketWandOption;
-
-import javax.annotation.Nonnull;
 
 public class ScreenWand extends Screen {
     private final ItemStack wand;
@@ -45,20 +47,21 @@ public class ScreenWand extends Screen {
         createButton(1, 2, wandOptions.random);
     }
 
-    @Override
-    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.drawCenteredString(font, wand.getDisplayName(), width / 2, height / 2 - FIELD_HEIGHT / 2 - SPACING_HEIGHT, 16777215);
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
+    // TODO: What?
+    // @Override
+    // public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    //     renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+    //     guiGraphics.drawCenteredString(font, wand.getDisplayName(), width / 2, height / 2 - FIELD_HEIGHT / 2 - SPACING_HEIGHT, 16777215);
+    //     super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    // }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (Minecraft.getInstance().options.keyInventory.matches(keyCode, scanCode)) {
+    public boolean keyPressed(KeyEvent event) {
+        if (Minecraft.getInstance().options.keyInventory.matches(event)) {
             this.onClose();
             return true;
         } else {
-            return super.keyPressed(keyCode, scanCode, modifiers);
+            return super.keyPressed(event);
         }
     }
 
@@ -75,7 +78,7 @@ public class ScreenWand extends Screen {
 
     private void clickButton(Button button, IOption<?> option) {
         option.next();
-        ModMessages.sendToServer(new PacketWandOption(option, false));
+        ClientPacketDistributor.sendToServer(new PacketWandOption(option, false));
         button.setMessage(getButtonLabel(option));
         button.setTooltip(getButtonTooltip(option));
     }

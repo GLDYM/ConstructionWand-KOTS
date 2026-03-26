@@ -6,6 +6,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.bus.api.EventPriority;
@@ -15,12 +16,13 @@ import dev.polaris_light.constructionwand.basics.ConfigClient;
 import dev.polaris_light.constructionwand.basics.WandUtil;
 import dev.polaris_light.constructionwand.basics.option.WandOptions;
 import dev.polaris_light.constructionwand.items.wand.ItemWand;
-import dev.polaris_light.constructionwand.network.ModMessages;
 import dev.polaris_light.constructionwand.network.PacketQueryUndo;
 import dev.polaris_light.constructionwand.network.PacketWandOption;
 
 public class KeybindHandler {
-    public static final KeyMapping KEY_OPT = new KeyMapping(getKey("wand_option"), GLFW.GLFW_KEY_LEFT_CONTROL, getKey("category"));
+    // TODO: Need a lang
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(ConstructionWand.loc("category"));
+    public static final KeyMapping KEY_OPT = new KeyMapping(getKey("wand_option"), GLFW.GLFW_KEY_LEFT_CONTROL, CATEGORY);
 
     private static String getKey(String name) {
 		return String.join(".", "key", ConstructionWand.MODID, name);
@@ -45,7 +47,7 @@ public class KeybindHandler {
         if(optPressed != optState || leftShiftPressed != leftShiftState) {
             optPressed = optState;
             leftShiftPressed = leftShiftState;
-            ModMessages.sendToServer(new PacketQueryUndo(optPressed, leftShiftPressed));
+            ClientPacketDistributor.sendToServer(new PacketQueryUndo(optPressed, leftShiftPressed));
             //ConstructionWand.LOGGER.debug("OPT key update: " + optPressed);
         }
     }
@@ -66,7 +68,7 @@ public class KeybindHandler {
 
         WandOptions wandOptions = new WandOptions(wand);
         wandOptions.lock.next(scroll < 0);
-        ModMessages.sendToServer(new PacketWandOption(wandOptions.lock, true));
+        ClientPacketDistributor.sendToServer(new PacketWandOption(wandOptions.lock, true));
         event.setCanceled(true);
     }
 
@@ -82,7 +84,7 @@ public class KeybindHandler {
 
         WandOptions wandOptions = new WandOptions(wand);
         wandOptions.cores.next();
-        ModMessages.sendToServer(new PacketWandOption(wandOptions.cores, true));
+        ClientPacketDistributor.sendToServer(new PacketWandOption(wandOptions.cores, true));
     }
 
     // (Sneak)+OPT+Right click wand to open GUI

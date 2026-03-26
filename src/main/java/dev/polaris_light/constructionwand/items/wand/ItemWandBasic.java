@@ -1,17 +1,17 @@
 package dev.polaris_light.constructionwand.items.wand;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import dev.polaris_light.constructionwand.basics.ConfigServer;
 
 import javax.annotation.Nonnull;
 
 public class ItemWandBasic extends ItemWand
 {
-    private final Tier tier;
+    private final ToolMaterial tier;
 
-    public ItemWandBasic(Properties properties, Tier tier) {
-        super(properties.durability(tier.getUses()));
+    public ItemWandBasic(Properties properties, ToolMaterial tier) {
+        super(properties.durability(tier.durability()).repairable(tier.repairItems()));
         this.tier = tier;
     }
 
@@ -27,6 +27,6 @@ public class ItemWandBasic extends ItemWand
 
     @Override
     public boolean isValidRepairItem(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
-        return this.tier.getRepairIngredient().test(repair);
+        return repair.is(this.tier.repairItems());
     }
 }

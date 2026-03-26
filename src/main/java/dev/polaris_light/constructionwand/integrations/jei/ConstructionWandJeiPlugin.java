@@ -1,13 +1,12 @@
 package dev.polaris_light.constructionwand.integrations.jei;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,18 +18,15 @@ import dev.polaris_light.constructionwand.basics.ConfigServer;
 import dev.polaris_light.constructionwand.client.KeybindHandler;
 import dev.polaris_light.constructionwand.items.ModItems;
 
-import javax.annotation.Nonnull;
-
 @JeiPlugin
 public class ConstructionWandJeiPlugin implements IModPlugin
 {
-    private static final ResourceLocation pluginId = ResourceLocation.fromNamespaceAndPath(ConstructionWand.MODID, ConstructionWand.MODID);
+    private static final Identifier pluginId = Identifier.fromNamespaceAndPath(ConstructionWand.MODID, ConstructionWand.MODID);
     private static final String baseKey = ConstructionWand.MODID + ".description.";
     private static final String baseKeyItem = "item." + ConstructionWand.MODID + ".";
 
-    @Nonnull
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return pluginId;
     }
 

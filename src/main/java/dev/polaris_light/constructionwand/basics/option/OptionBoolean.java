@@ -16,7 +16,7 @@ public class OptionBoolean implements IOption<Boolean>
         this.enabled = enabled;
         this.onChanged = onChanged;
 
-        if(tag.contains(key)) value = tag.getBoolean(key);
+        if(tag.contains(key)) value = tag.getBoolean(key).orElse(dval);
         else value = dval;
     }
 

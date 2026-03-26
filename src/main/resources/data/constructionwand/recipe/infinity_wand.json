@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "tag": "c:rods/wooden"
-    },
-    "X": {
-      "tag": "c:gems/diamond"
-    }
+    "#": "#c:rods/wooden",
+    "X": "#c:nether_stars"
   },
   "pattern": [
     "  X",
@@ -16,6 +12,6 @@
   ],
   "result": {
     "count": 1,
-    "id": "constructionwand:diamond_wand"
+    "id": "constructionwand:infinity_wand"
   }
 }

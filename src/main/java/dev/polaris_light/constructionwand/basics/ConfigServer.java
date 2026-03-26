@@ -2,9 +2,9 @@ package dev.polaris_light.constructionwand.basics;
 
 import dev.polaris_light.constructionwand.items.ModItems;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -30,7 +30,7 @@ public class ConfigServer
     public static final ModConfigSpec.ConfigValue<List<?>> TE_LIST;
     private static final String[] TE_LIST_DEFAULT = {"chiselsandbits"};
 
-    private static final HashMap<ResourceLocation, WandProperties> wandProperties = new HashMap<>();
+    private static final HashMap<Identifier, WandProperties> wandProperties = new HashMap<>();
 
     public static WandProperties getWandProperties(Item wand) {
         return wandProperties.getOrDefault(BuiltInRegistries.ITEM.getKey(wand), WandProperties.DEFAULT);
@@ -58,7 +58,7 @@ public class ConfigServer
 
         public WandProperties(ModConfigSpec.Builder builder, DeferredHolder<Item, ? extends Item> wandSupplier, int defDurability, int defLimit,
                               int defAngel, int defDestruction, boolean defUpgradeable) {
-            ResourceLocation registryName = wandSupplier.getId();
+            Identifier registryName = wandSupplier.getId();
             builder.push(registryName.getPath());
 
             if(defDurability > 0) {
@@ -110,9 +110,9 @@ public class ConfigServer
                 "in the /saves/myworld/serverconfig folder. If you want to change the serverconfig for all",
                 "new worlds, copy the config files in the /defaultconfigs folder.");
 
-        new WandProperties(builder, ModItems.WAND_STONE, Tiers.STONE.getUses(), 9, 0, 0, false);
-        new WandProperties(builder, ModItems.WAND_IRON, Tiers.IRON.getUses(), 27, 2, 9, true);
-        new WandProperties(builder, ModItems.WAND_DIAMOND, Tiers.DIAMOND.getUses(), 128, 8, 25, true);
+        new WandProperties(builder, ModItems.WAND_STONE, ToolMaterial.STONE.durability(), 9, 0, 0, false);
+        new WandProperties(builder, ModItems.WAND_IRON, ToolMaterial.IRON.durability(), 27, 2, 9, true);
+        new WandProperties(builder, ModItems.WAND_DIAMOND, ToolMaterial.DIAMOND.durability(), 128, 8, 25, true);
         new WandProperties(builder, ModItems.WAND_INFINITY, 0, 1024, 16, 81, true);
 
         builder.push("misc");

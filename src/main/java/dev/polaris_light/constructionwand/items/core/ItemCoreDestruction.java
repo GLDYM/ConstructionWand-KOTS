@@ -1,6 +1,6 @@
 package dev.polaris_light.constructionwand.items.core;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.api.IWandAction;
 import dev.polaris_light.constructionwand.wand.action.ActionDestruction;
@@ -22,7 +22,7 @@ public class ItemCoreDestruction extends ItemCore
     }
 
     @Override
-    public ResourceLocation getRegistryName() {
+    public Identifier getRegistryName() {
         return ConstructionWand.loc("core_destruction");
     }
 }

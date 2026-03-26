@@ -20,7 +20,7 @@ public abstract class ItemCore extends Item implements IWandCore
         super(properties);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    // @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@Nonnull ItemStack itemstack, Level worldIn, @Nonnull List<Component> lines, @Nonnull TooltipFlag extraInfo) {
         lines.add(
                 Component.translatable(ConstructionWand.MODID + ".option.cores." + getRegistryName().toString() + ".desc")

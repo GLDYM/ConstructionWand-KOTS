@@ -1,7 +1,6 @@
 package dev.polaris_light.constructionwand.containers.handlers;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import dev.polaris_light.constructionwand.api.IContainerHandler;
 import dev.polaris_light.constructionwand.containers.ContainerTrace;
@@ -9,7 +8,6 @@ import dev.polaris_light.constructionwand.items.wand.ItemWand;
 
 import com.wintercogs.beyonddimensions.api.dimensionnet.DimensionsNet;
 import com.wintercogs.beyonddimensions.api.dimensionnet.UnifiedStorage;
-import com.wintercogs.beyonddimensions.api.storage.key.IStackKey;
 import com.wintercogs.beyonddimensions.api.storage.key.impl.ItemStackKey;
 
 public class HandlerDimensionsNet implements IContainerHandler {
@@ -26,7 +24,7 @@ public class HandlerDimensionsNet implements IContainerHandler {
     @Override
     public int getSignature(Player player, ItemStack inventoryStack) {
         DimensionsNet net = DimensionsNet.getNetFromPlayer(player);
-        return (net != null) ? 10000 + net.getId() : -1;
+        return (net != null && net.getId() >= 0) ? 10000 + net.getId() : -1;
     }
 
     @Override
@@ -47,7 +45,7 @@ public class HandlerDimensionsNet implements IContainerHandler {
     @Override
     public int useItems(Player player, ContainerTrace trace, ItemStack itemStack, ItemStack inventoryStack, int count) {
         DimensionsNet net = DimensionsNet.getNetFromPlayer(player);
-        if (net == null) return 0;
+        if (net == null) return count;
 
         UnifiedStorage storage = net.getUnifiedStorage();
         long result = storage.extract(new ItemStackKey(itemStack), count, false, false).amount();

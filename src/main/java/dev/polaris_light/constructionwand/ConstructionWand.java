@@ -10,7 +10,7 @@ import dev.polaris_light.constructionwand.crafting.ModRecipes;
 import dev.polaris_light.constructionwand.items.ModItems;
 import dev.polaris_light.constructionwand.network.ModMessages;
 import dev.polaris_light.constructionwand.wand.undo.UndoHistory;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -56,7 +56,7 @@ public class ConstructionWand {
         ContainerRegistrar.register();
     }
 
-    public static ResourceLocation loc(String name) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, name);
+    public static Identifier loc(String name) {
+        return Identifier.fromNamespaceAndPath(MODID, name);
     }
 }

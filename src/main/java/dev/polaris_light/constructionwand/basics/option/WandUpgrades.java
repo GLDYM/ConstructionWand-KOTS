@@ -3,8 +3,7 @@ package dev.polaris_light.constructionwand.basics.option;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.core.registries.BuiltInRegistries;
 import dev.polaris_light.constructionwand.ConstructionWand;
@@ -37,12 +36,18 @@ public class WandUpgrades<T extends IWandUpgrade>
     }
 
     protected void deserialize() {
-        ListTag listnbt = tag.getList(key, Tag.TAG_STRING);
+        ListTag listnbt = tag.getList(key).orElseGet(ListTag::new);
         boolean require_fix = false;
 
         for(int i = 0; i < listnbt.size(); i++) {
-            String str = listnbt.getString(i);
-            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(str));
+            String str = listnbt.getString(i).orElse("");
+            Item item = BuiltInRegistries.ITEM.get(Identifier.tryParse(str))
+                    .map(holder -> holder.value())
+                    .orElse(null);
+            if (item == null) {
+                require_fix = true;
+                continue;
+            }
 
             T data;
             try {

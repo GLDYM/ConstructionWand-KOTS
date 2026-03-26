@@ -21,7 +21,7 @@ public class OptionEnum<E extends Enum<E>> implements IOption<E>
         this.dval = dval;
         this.onChanged = onChanged;
 
-        value = Enums.getIfPresent(enumClass, tag.getString(key).toUpperCase()).or(dval);
+        value = Enums.getIfPresent(enumClass, tag.getString(key).orElse("").toUpperCase()).or(dval);
     }
 
     public OptionEnum(CompoundTag tag, String key, Class<E> enumClass, E dval, boolean enabled) {
