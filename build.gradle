@@ -31,7 +31,6 @@ neoForge {
 
         data {
             clientData()
-            serverData()
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
@@ -82,7 +81,7 @@ dependencies {
     // compileOnly "curse.maven:l2-backpack-620229:${l2backpack_fileid}"
     // compileOnly "curse.maven:l2library-620203:${l2library_fileid}"
     // compileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}"
-    // compileOnly "curse.maven:toms-storage-378609:${tomsstorage_fileid}"
+    compileOnly "curse.maven:toms-storage-378609:${tomsstorage_fileid}"
     // compileOnly "curse.maven:refined-storage-243076:${refined_storage_fileid}"
 
     compileOnly "curse.maven:beyond-dimensions-1222890:${beyond_dimensions_fileid}"

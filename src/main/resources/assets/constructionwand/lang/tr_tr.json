@@ -6,7 +6,7 @@
   "item.constructionwand.core_angel": "Melek Asa Çekirdeği",
   "item.constructionwand.core_destruction": "Yıkım Asa Çekirdeği",
 
-  "key.constructionwand.category": "İnşa Asası",
+  "key.category.constructionwand.category": "İnşa Asası",
   "key.constructionwand.wand_option": "Asa Seçenekleri",
 
   "constructionwand.tooltip.blocks": "Maks. %d blok",

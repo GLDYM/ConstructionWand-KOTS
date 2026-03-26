@@ -6,7 +6,7 @@
   "item.constructionwand.core_angel": "天使の杖のコア",
   "item.constructionwand.core_destruction": "破壊の杖のコア",
 
-  "key.constructionwand.category": "建築の杖",
+  "key.category.constructionwand.category": "建築の杖",
   "key.constructionwand.wand_option": "杖のオプション",
 
   "constructionwand.tooltip.blocks": "最大%dブロック",

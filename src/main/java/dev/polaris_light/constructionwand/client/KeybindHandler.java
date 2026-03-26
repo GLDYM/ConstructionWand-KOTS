@@ -20,7 +20,6 @@ import dev.polaris_light.constructionwand.network.PacketQueryUndo;
 import dev.polaris_light.constructionwand.network.PacketWandOption;
 
 public class KeybindHandler {
-    // TODO: Need a lang
     public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(ConstructionWand.loc("category"));
     public static final KeyMapping KEY_OPT = new KeyMapping(getKey("wand_option"), GLFW.GLFW_KEY_LEFT_CONTROL, CATEGORY);
 

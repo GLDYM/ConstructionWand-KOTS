@@ -6,7 +6,7 @@
   "item.constructionwand.core_angel": "Ангельское ядро для жезла",
   "item.constructionwand.core_destruction": "Ядро разрушения для жезла",
 
-  "key.constructionwand.category": "Жезл строительства",
+  "key.category.constructionwand.category": "Жезл строительства",
   "key.constructionwand.wand_option": "Опции жезла",
 
   "constructionwand.tooltip.blocks": "Максимум %d блоков",

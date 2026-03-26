@@ -3,15 +3,9 @@ package dev.polaris_light.constructionwand.items.core;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.api.IWandCore;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public abstract class ItemCore extends Item implements IWandCore
@@ -20,10 +14,9 @@ public abstract class ItemCore extends Item implements IWandCore
         super(properties);
     }
 
-    // @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack itemstack, Level worldIn, @Nonnull List<Component> lines, @Nonnull TooltipFlag extraInfo) {
+    public static void appendCoreTooltip(IWandCore core, List<Component> lines) {
         lines.add(
-                Component.translatable(ConstructionWand.MODID + ".option.cores." + getRegistryName().toString() + ".desc")
+                Component.translatable(ConstructionWand.MODID + ".option.cores." + core.getRegistryName().toString() + ".desc")
                         .withStyle(ChatFormatting.GRAY)
         );
         lines.add(

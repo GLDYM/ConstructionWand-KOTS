@@ -6,7 +6,7 @@
   "item.constructionwand.core_angel": "Änglastavskärna",
   "item.constructionwand.core_destruction": "Rivningsstavskärna",
 
-  "key.constructionwand.category": "Byggstav",
+  "key.category.constructionwand.category": "Byggstav",
   "key.constructionwand.wand_option": "Stavinställningar",
 
   "constructionwand.tooltip.blocks": "Max. %d block",

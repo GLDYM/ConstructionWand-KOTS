@@ -8,13 +8,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.api.IWandCore;
 import dev.polaris_light.constructionwand.basics.WandUtil;
@@ -87,41 +84,38 @@ public abstract class ItemWand extends Item
         return Integer.MAX_VALUE;
     }
 
-    // TODO: need fix
-    // @Override
-    // @OnlyIn(Dist.CLIENT)
-    // public void appendHoverText(@Nonnull ItemStack itemstack, TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag extraInfo) {
-    //     WandOptions options = new WandOptions(itemstack);
-    //     int limit = options.cores.get().getWandAction().getLimit(itemstack);
+    public static void appendWandTooltip(ItemStack itemStack, List<Component> lines, TooltipFlag flag) {
+        WandOptions options = new WandOptions(itemStack);
+        int limit = options.cores.get().getWandAction().getLimit(itemStack);
 
-    //     String langTooltip = ConstructionWand.MODID + ".tooltip.";
+        String langTooltip = ConstructionWand.MODID + ".tooltip.";
 
-    //     // +SHIFT tooltip: show all options + installed cores
-    //     if(extraInfo.hasShiftDown()) {
-    //         for(int i = 1; i < options.allOptions.length; i++) {
-    //             IOption<?> opt = options.allOptions[i];
-    //             lines.add(Component.translatable(opt.getKeyTranslation()).withStyle(ChatFormatting.AQUA)
-    //                     .append(Component.translatable(opt.getValueTranslation()).withStyle(ChatFormatting.GRAY))
-    //             );
-    //         }
-    //         if(!options.cores.getUpgrades().isEmpty()) {
-    //             lines.add(Component.literal(""));
-    //             lines.add(Component.translatable(langTooltip + "cores").withStyle(ChatFormatting.GRAY));
+        // +SHIFT tooltip: show all options + installed cores
+        if(flag.hasShiftDown()) {
+            for(int i = 1; i < options.allOptions.length; i++) {
+                IOption<?> opt = options.allOptions[i];
+                lines.add(Component.translatable(opt.getKeyTranslation()).withStyle(ChatFormatting.AQUA)
+                        .append(Component.translatable(opt.getValueTranslation()).withStyle(ChatFormatting.GRAY))
+                );
+            }
+            if(!options.cores.getUpgrades().isEmpty()) {
+                lines.add(Component.literal(""));
+                lines.add(Component.translatable(langTooltip + "cores").withStyle(ChatFormatting.GRAY));
 
-    //             for(IWandCore core : options.cores.getUpgrades()) {
-    //                 lines.add(Component.translatable(options.cores.getKeyTranslation() + "." + core.getRegistryName().toString()));
-    //             }
-    //         }
-    //     }
-    //     // Default tooltip: show block limit + active wand core
-    //     else {
-    //         IOption<?> opt = options.allOptions[0];
-    //         lines.add(Component.translatable(langTooltip + "blocks", limit).withStyle(ChatFormatting.GRAY));
-    //         lines.add(Component.translatable(opt.getKeyTranslation()).withStyle(ChatFormatting.AQUA)
-    //                 .append(Component.translatable(opt.getValueTranslation()).withStyle(ChatFormatting.WHITE)));
-    //         lines.add(Component.translatable(langTooltip + "shift").withStyle(ChatFormatting.AQUA));
-    //     }
-    // }
+                for(IWandCore core : options.cores.getUpgrades()) {
+                    lines.add(Component.translatable(options.cores.getKeyTranslation() + "." + core.getRegistryName().toString()));
+                }
+            }
+        }
+        // Default tooltip: show block limit + active wand core
+        else {
+            IOption<?> opt = options.allOptions[0];
+            lines.add(Component.translatable(langTooltip + "blocks", limit).withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable(opt.getKeyTranslation()).withStyle(ChatFormatting.AQUA)
+                    .append(Component.translatable(opt.getValueTranslation()).withStyle(ChatFormatting.WHITE)));
+            lines.add(Component.translatable(langTooltip + "shift").withStyle(ChatFormatting.AQUA));
+        }
+    }
 
     public static void optionMessage(Player player, IOption<?> option) {
         player.sendOverlayMessage(

@@ -34,44 +34,7 @@ public class ModItems
     public static final DeferredItem<Item>[] WANDS = new DeferredItem[] {WAND_STONE, WAND_IRON, WAND_DIAMOND, WAND_INFINITY};
     public static final DeferredItem<Item>[] CORES = new DeferredItem[] {CORE_ANGEL, CORE_DESTRUCTION};
 
-    // TODO: ?
-    // @OnlyIn(Dist.CLIENT)
-    // public static void registerModelProperties() {
-    //     for(DeferredHolder<Item, Item> itemSupplier : WANDS) {
-    //         Item item = itemSupplier.get();
-    //         ItemProperties.register(
-    //                 item, ConstructionWand.loc("using_core"),
-    //                 (stack, world, entity, n) -> !(stack.getItem() instanceof ItemWand) ? 0 :
-    //                                           new WandOptions(stack).cores.get().getColor() != -1 ? 1 : 0
-    //                         // fuck ARGB, ARGB < -1 !
-    //                         // new WandOptions(stack).cores.get().getColor() > -1 ? 1 : 0        }
-    // }
 
-    // @OnlyIn(Dist.CLIENT)
-    // @SubscribeEvent
-    // public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
-    //     for(DeferredHolder<Item, Item> itemSupplier : WANDS) {
-    //         Item item = itemSupplier.get();
-    //         event.register((stack, layer) -> {
-    //            stack.get()=Item&& stanceof ItemWand)) {
-    //           ?    return -1;
-    //    ck).cores.get().getColor();
-    //             :   }
-    // }
-    //
-    // @Override
-    // public void generateCustomItemModel(ItemModelGenerator generator, String name) {
-    //     ModelFile wandWithCore = generator.withExistingParent(name + "_core", "item/handheld")
-    //             .texture("layer0", generator.modLoc("item/" + name))
-    //             .texture("layer1", generator.modLoc("item/overlay_core"));
-
-    //     generator.withExistingParent(name, "item/handheld")
-    //             .texture("layer0", generator.modLoc("item/" + name))
-    //             .override()
-    //             .predicate(generator.modLoc("using_core"), 1)
-    //             .model(wandWithCore).end();
-
-    // }
 
     @SubscribeEvent
     public static void addCreative(BuildCreativeModeTabContentsEvent event) {

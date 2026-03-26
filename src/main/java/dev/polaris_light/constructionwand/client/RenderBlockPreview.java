@@ -1,8 +1,21 @@
 package dev.polaris_light.constructionwand.client;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.polaris_light.constructionwand.basics.WandUtil;
+import dev.polaris_light.constructionwand.network.PacketRequestPreview;
 import net.minecraft.core.BlockPos;
+import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.Set;
 
@@ -12,55 +25,70 @@ public class RenderBlockPreview {
     public Set<BlockPos> undoBlocks;
     public Set<BlockPos> previewBlocks;
 
-    // TODO: fix this
-    // @SubscribeEvent
-    // public void renderBlockHighlight(RenderHighlightEvent.Block event) {
-    //     if(event.getTarget().getType() != HitResult.Type.BLOCK) return;
+    @SubscribeEvent
+    public void renderBlockHighlight(ExtractBlockOutlineRenderStateEvent event) {
+        BlockHitResult rtr = event.getHitResult();
+        Entity entity = event.getCamera().entity();
+        if (!(entity instanceof Player player)) {
+            return;
+        }
 
-    //     BlockHitResult rtr = event.getTarget();
-    //     Entity entity = event.getCamera().getEntity();
-    //     if(!(entity instanceof Player player)) return;
-    //     Set<BlockPos> blocks;
-    //     float colorR = 0, colorG = 0, colorB = 0;
+        Set<BlockPos> blocks;
+        final int color;
 
-    //     ItemStack wand = WandUtil.holdingWand(player);
-    //     if(wand == null) return;
+        ItemStack wand = WandUtil.holdingWand(player);
+        if (wand == null) {
+            return;
+        }
 
-    //     if (KeybindHandler.isOptKeyDown()) {
-    //         blocks = undoBlocks;
-    //         colorG = 1;
-    //     }
-    //     else {
-    //         // Use cached previews of the same target pos/dir
-    //         // Exception: always update if blockCount < 2 to prevent 1-block previews when block updates
-    //         // from the last placement are lagging
-    //         if(lastRayTraceResult == null || !compareRTR(lastRayTraceResult, rtr) || lastWand.equals(wand)
-    //             || previewBlocks == null || previewBlocks.size() < 2) {
-    //             lastRayTraceResult = rtr;
-    //             lastWand = wand;
-    //             ModMessages.sendToServer(new PacketRequestPreview(rtr, wand));
-    //         }
-    //         blocks = previewBlocks;
-    //     }
+        if (KeybindHandler.isOptKeyDown()) {
+            blocks = undoBlocks;
+            color = ARGB.color(102, 0, 255, 0);
+        } else {
+            // Request a refresh if target/wand changed or cached preview is too small.
+            if (lastRayTraceResult == null
+                    || !compareRTR(lastRayTraceResult, rtr)
+                    || !WandUtil.stackEquals(lastWand, wand)
+                    || previewBlocks == null
+                    || previewBlocks.size() < 2) {
+                lastRayTraceResult = rtr;
+                lastWand = wand.copy();
+                ClientPacketDistributor.sendToServer(new PacketRequestPreview(rtr, wand));
+            }
+            blocks = previewBlocks;
+            color = ARGB.color(102, 0, 0, 0);
+        }
 
-    //     if(blocks == null || blocks.isEmpty()) return;
+        if (blocks == null || blocks.isEmpty()) {
+            return;
+        }
 
-    //     PoseStack ms = event.getPoseStack();
-    //     MultiBufferSource buffer = event.getMultiBufferSource();
-    //     VertexConsumer lineBuilder = buffer.getBuffer(RenderType.LINES);
+        Vec3 cameraPos = event.getCamera().position();
+        double d0 = cameraPos.x;
+        double d1 = cameraPos.y;
+        double d2 = cameraPos.z;
 
-    //     Vec3 cameraPos = event.getCamera().getPosition();
-    //     double d0 = cameraPos.x;
-    //     double d1 = cameraPos.y;
-    //     double d2 = cameraPos.z;
+        event.addCustomRenderer((renderState, buffer, poseStack, translucentPass, levelRenderState) -> {
+            if (translucentPass != renderState.isTranslucent()) {
+                return false;
+            }
 
-    //     for(BlockPos block : blocks) {
-    //         AABB aabb = new AABB(block).move(-d0, -d1, -d2);
-    //         LevelRenderer.renderLineBox(ms, lineBuilder, aabb, colorR, colorG, colorB, 0.4F);
-    //     }
-
-    //     event.setCanceled(true);
-    // }
+            VertexConsumer lineBuilder = buffer.getBuffer(RenderTypes.lines());
+            for (BlockPos block : blocks) {
+                ShapeRenderer.renderShape(
+                        poseStack,
+                        lineBuilder,
+                        Shapes.block(),
+                        block.getX() - d0,
+                        block.getY() - d1,
+                        block.getZ() - d2,
+                        color,
+                        4.0F
+                );
+            }
+            return true;
+        });
+    }
 
     public void reset() {
         lastRayTraceResult = null;

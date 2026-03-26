@@ -7,7 +7,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -88,9 +90,14 @@ public class WandUtil
         return player.getInventory().getNonEquipmentItems().subList(9, player.getInventory().getNonEquipmentItems().size());
     }
 
-    // TODO: Empty?
     public static List<ItemStack> getArmor(Player player) {
-        return new ArrayList<>();
+        ArrayList<ItemStack> armor = new ArrayList<>(4);
+        int inventorySize = Inventory.INVENTORY_SIZE;
+        armor.add(player.getInventory().getItem(EquipmentSlot.FEET.getIndex(inventorySize)));
+        armor.add(player.getInventory().getItem(EquipmentSlot.LEGS.getIndex(inventorySize)));
+        armor.add(player.getInventory().getItem(EquipmentSlot.CHEST.getIndex(inventorySize)));
+        armor.add(player.getInventory().getItem(EquipmentSlot.HEAD.getIndex(inventorySize)));
+        return armor;
     }
 
 	public static List<ItemStack> getCuriosInv(Player player) {

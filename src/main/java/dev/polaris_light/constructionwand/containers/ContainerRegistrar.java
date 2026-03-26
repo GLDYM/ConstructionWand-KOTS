@@ -2,6 +2,7 @@ package dev.polaris_light.constructionwand.containers;
 
 import net.neoforged.fml.ModList;
 import dev.polaris_light.constructionwand.ConstructionWand;
+import dev.polaris_light.constructionwand.containers.handlers.HandlerAdvWirelessTerminal;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerBundle;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerCapability;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerDimensionsNet;
@@ -29,10 +30,10 @@ public class ContainerRegistrar
         //     ConstructionWand.LOGGER.info("Applied Energistics 2 integration added");
         // }
 
-        // if(ModList.get().isLoaded("toms_storage")) {
-        //     ConstructionWand.containerManager.register(new HandlerAdvWirelessTerminal());
-        //     ConstructionWand.LOGGER.info("Tom's Simple Storage integration added");
-        // }
+        if(ModList.get().isLoaded("toms_storage")) {
+            ConstructionWand.containerManager.register(new HandlerAdvWirelessTerminal());
+            ConstructionWand.LOGGER.info("Tom's Simple Storage integration added");
+        }
 
         // if(ModList.get().isLoaded("refinedstorage")) {
         //     ConstructionWand.containerManager.register(new HandlerWirelessGrid());

@@ -6,7 +6,7 @@
     "item.constructionwand.core_angel": "Angel Wand Core",
     "item.constructionwand.core_destruction": "Destruction Wand Core",
   
-    "key.constructionwand.category": "Varinha de construção",
+    "key.category.constructionwand.category": "Varinha de construção",
     "key.constructionwand.wand_option": "Opções de varinha",
   
     "constructionwand.tooltip.blocks": "Max. %d blocos",
