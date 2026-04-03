@@ -1,11 +1,14 @@
 package dev.polaris_light.constructionwand.containers.handlers;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.MEStorage;
+import appeng.api.storage.StorageHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.contents.PortableCellMenuHost;
 import appeng.items.tools.powered.PortableCellItem;
+import appeng.menu.locator.MenuLocators;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -50,26 +53,35 @@ public class HandlerPortableCell implements IContainerHandler {
     @Override
     public int useItems(Player player, ContainerTrace trace, ItemStack target, ItemStack cell, int count) {
         if (player instanceof ServerPlayer serverPlayer) {
-            MEStorage storage = getStorage(serverPlayer, cell);
+            PortableCellMenuHost<?> host = getHost(serverPlayer, cell);
+            if (host == null) return count;
+
+            MEStorage storage = host.getInventory();
             if (storage == null) return count;
 
             AEItemKey key = AEItemKey.of(target);
             if (key == null) return count;
 
-            var extracted = storage.extract(key, count, Actionable.MODULATE, null);
-            long remaining = count - (int)extracted;
+            var source = IActionSource.ofPlayer(serverPlayer);
+            long extracted = StorageHelper.poweredExtraction(host, storage, key, count, source, Actionable.MODULATE);
+            long remaining = count - extracted;
             return remaining > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) remaining;
         }
         return count;
     }
 
     private MEStorage getStorage(ServerPlayer player, ItemStack cell) {
+        var host = getHost(player, cell);
+        return host != null ? host.getInventory() : null;
+    }
+
+    private PortableCellMenuHost<?> getHost(ServerPlayer player, ItemStack cell) {
         if (cell.getItem() instanceof PortableCellItem c) {
             try {
-                PortableCellMenuHost host = new PortableCellMenuHost(
+                PortableCellMenuHost<?> host = new PortableCellMenuHost<>(
                     c,
                     player,
-                    null,
+                    MenuLocators.forStack(cell),
                     (p, menu) -> {}
                 );
 
@@ -79,7 +91,7 @@ public class HandlerPortableCell implements IContainerHandler {
                     return null;
                 }
 
-                return host.getInventory();
+                return host;
             } catch (Exception e) {
                 return null;
             }

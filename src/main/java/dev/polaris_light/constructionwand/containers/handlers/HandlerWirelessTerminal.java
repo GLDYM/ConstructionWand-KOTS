@@ -1,11 +1,14 @@
 package dev.polaris_light.constructionwand.containers.handlers;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.MEStorage;
+import appeng.api.storage.StorageHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.menu.locator.MenuLocators;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -56,26 +59,35 @@ public class HandlerWirelessTerminal implements IContainerHandler {
     @Override
     public int useItems(Player player, ContainerTrace trace, ItemStack target, ItemStack terminal, int count) {
         if (player instanceof ServerPlayer serverPlayer) {
-            MEStorage storage = getStorage(serverPlayer, terminal);
+            WirelessTerminalMenuHost<?> host = getHost(serverPlayer, terminal);
+            if (host == null) return count;
+
+            MEStorage storage = host.getInventory();
             if (storage == null) return count;
 
             AEItemKey key = AEItemKey.of(target);
             if (key == null) return count;
 
-            var extracted = storage.extract(key, count, Actionable.MODULATE, null);
-            long remaining = count - (int)extracted;
+            var source = IActionSource.ofPlayer(serverPlayer);
+            long extracted = StorageHelper.poweredExtraction(host, storage, key, count, source, Actionable.MODULATE);
+            long remaining = count - extracted;
             return remaining > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) remaining;
         }
         return count;
     }
 
     private MEStorage getStorage(ServerPlayer player, ItemStack terminal) {
+        var host = getHost(player, terminal);
+        return host != null ? host.getInventory() : null;
+    }
+
+    private WirelessTerminalMenuHost<?> getHost(ServerPlayer player, ItemStack terminal) {
         if (terminal.getItem() instanceof WirelessTerminalItem wireless) {
             try {
-                WirelessTerminalMenuHost host = new WirelessTerminalMenuHost(
+                WirelessTerminalMenuHost<?> host = new WirelessTerminalMenuHost<>(
                     wireless,
                     player,
-                    null,
+                    MenuLocators.forStack(terminal),
                     (p, menu) -> {}
                 );
             
@@ -90,7 +102,7 @@ public class HandlerWirelessTerminal implements IContainerHandler {
                     return null;
                 }
 
-                return host.getInventory();
+                return host;
             } catch (Exception e) {
                 return null;
             }
