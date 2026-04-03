@@ -8,9 +8,6 @@ plugins {
 
 version = "${mod_version}"
 group = "${mod_group_id}"
-base {
-    archivesName = "${mod_id}-kots-${mc_version}"
-}
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
@@ -72,9 +69,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly "mezz.jei:jei-${mc_version}-pre-3-common-api:${jei_version}"
-    // compileOnly "mezz.jei:jei-${mc_version}-pre-3-neoforge-api:${jei_version}"
-    // localRuntime "mezz.jei:jei-${mc_version}-pre-3-neoforge:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
 
     // compileOnly "vazkii.botania:botania-neoforge-1.21.1:${botania_version}"
@@ -144,4 +141,8 @@ idea {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+tasks.named('jar') {
+    archiveFileName.set("${mod_id}-kots-${minecraft_version}-${mod_version}.jar") // Set the full name of the generated jar to include the version
 }

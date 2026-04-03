@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": "#c:rods/wooden",
+    "#": "minecraft:amethyst_shard",
     "X": "#c:nether_stars"
   },
   "pattern": [

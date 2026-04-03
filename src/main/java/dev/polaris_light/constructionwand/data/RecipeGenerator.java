@@ -46,7 +46,7 @@ public class RecipeGenerator extends RecipeProvider
     private void wandRecipe(ItemLike wand, Inp material) {
         shaped(RecipeCategory.TOOLS, wand)
                 .define('X', material.ingredient())
-                .define('#', Tags.Items.RODS_WOODEN)
+                .define('#', Items.AMETHYST_SHARD)
                 .pattern("  X")
                 .pattern(" # ")
                 .pattern("#  ")
