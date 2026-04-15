@@ -8,6 +8,7 @@ import dev.polaris_light.constructionwand.containers.handlers.HandlerCapability;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerDimensionsNet;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerNetTerminal;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerShulkerbox;
+import dev.polaris_light.constructionwand.containers.handlers.HandlerWirelessGrid;
 
 
 public class ContainerRegistrar
@@ -35,10 +36,10 @@ public class ContainerRegistrar
             ConstructionWand.LOGGER.info("Tom's Simple Storage integration added");
         }
 
-        // if(ModList.get().isLoaded("refinedstorage")) {
-        //     ConstructionWand.containerManager.register(new HandlerWirelessGrid());
-        //     ConstructionWand.LOGGER.info("Refined Storage integration added");
-        // }
+        if(ModList.get().isLoaded("refinedstorage")) {
+            ConstructionWand.containerManager.register(new HandlerWirelessGrid());
+            ConstructionWand.LOGGER.info("Refined Storage integration added");
+        }
 
         if(ModList.get().isLoaded("beyonddimensions")) {
             ConstructionWand.containerManager.register(new HandlerDimensionsNet());
