@@ -72,7 +72,7 @@ public class HandlerWirelessTerminal implements IContainerHandler {
     private MEStorage getStorage(ServerPlayer player, ItemStack terminal) {
         if (terminal.getItem() instanceof WirelessTerminalItem wireless) {
             try {
-                WirelessTerminalMenuHost host = terminal.getMenuHost(
+                WirelessTerminalMenuHost host = wireless.getMenuHost(
                     player,
                     null,
                     terminal,
