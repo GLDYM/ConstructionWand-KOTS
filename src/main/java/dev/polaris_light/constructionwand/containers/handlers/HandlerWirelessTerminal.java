@@ -84,11 +84,10 @@ public class HandlerWirelessTerminal implements IContainerHandler {
     private WirelessTerminalMenuHost<?> getHost(ServerPlayer player, ItemStack terminal) {
         if (terminal.getItem() instanceof WirelessTerminalItem wireless) {
             try {
-                WirelessTerminalMenuHost<?> host = new WirelessTerminalMenuHost<>(
-                    wireless,
+                WirelessTerminalMenuHost<?> host = wireless.getMenuHost(
                     player,
                     MenuLocators.forStack(terminal),
-                    (p, menu) -> {}
+                    null
                 );
             
                 if (host.getActionableNode() == null) {
