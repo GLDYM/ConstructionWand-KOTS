@@ -1,6 +1,7 @@
 package thetadev.constructionwand.containers.handlers;
 
 import appeng.api.config.Actionable;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.MEStorage;
 import appeng.core.localization.PlayerMessages;
@@ -72,25 +73,29 @@ public class HandlerWirelessTerminal implements IContainerHandler {
     private MEStorage getStorage(ServerPlayer player, ItemStack terminal) {
         if (terminal.getItem() instanceof WirelessTerminalItem wireless) {
             try {
-                WirelessTerminalMenuHost host = wireless.getMenuHost(
+                ItemMenuHost menuHost = wireless.getMenuHost(
                     player,
                     0,
                     terminal,
                     null
                 );
-            
-                if (!host.rangeCheck()) {
-                    player.displayClientMessage(PlayerMessages.OutOfRange.text(), true);
+
+                if (menuHost instanceof WirelessTerminalMenuHost host) {
+                    if (!host.rangeCheck()) {
+                        player.displayClientMessage(PlayerMessages.OutOfRange.text(), true);
+                        return null;
+                    }
+    
+                    double power = wireless.getAECurrentPower(terminal);
+                    if (power <= 0) {
+                        player.displayClientMessage(PlayerMessages.DeviceNotPowered.text(), true);
+                        return null;
+                    }
+    
+                    return host.getInventory();
+                } else {
                     return null;
                 }
-
-                double power = wireless.getAECurrentPower(terminal);
-                if (power <= 0) {
-                    player.displayClientMessage(PlayerMessages.DeviceNotPowered.text(), true);
-                    return null;
-                }
-
-                return host.getInventory();
             } catch (Exception e) {
                 return null;
             }
