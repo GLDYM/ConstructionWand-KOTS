@@ -74,7 +74,7 @@ public class HandlerWirelessTerminal implements IContainerHandler {
             try {
                 WirelessTerminalMenuHost host = wireless.getMenuHost(
                     player,
-                    null,
+                    0,
                     terminal,
                     null
                 );
