@@ -77,10 +77,11 @@ dependencies {
     // compileOnly "vazkii.botania:botania-neoforge-1.21.1:${botania_version}"
     // compileOnly "curse.maven:l2-backpack-620229:${l2backpack_fileid}"
     // compileOnly "curse.maven:l2library-620203:${l2library_fileid}"
-    // compileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}"
+    compileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}"
+    runtimeOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}"
     compileOnly "curse.maven:toms-storage-378609:${tomsstorage_fileid}"
     compileOnly "curse.maven:refined-storage-243076:${refined_storage_fileid}"
-    localRuntime "curse.maven:refined-storage-243076:${refined_storage_fileid}"
+    // runtimeOnly "curse.maven:refined-storage-243076:${refined_storage_fileid}"
 
     compileOnly "curse.maven:beyond-dimensions-1222890:${beyond_dimensions_fileid}"
     // localRuntime "curse.maven:beyond-dimensions-1222890:${beyond_dimensions_fileid}"

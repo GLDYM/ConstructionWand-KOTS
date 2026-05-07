@@ -7,6 +7,7 @@ import com.refinedmods.refinedstorage.api.network.storage.StorageNetworkComponen
 import com.refinedmods.refinedstorage.api.storage.Actor;
 import com.refinedmods.refinedstorage.common.Platform;
 import com.refinedmods.refinedstorage.common.api.RefinedStorageApi;
+import com.refinedmods.refinedstorage.common.api.support.energy.EnergyItemContext;
 import com.refinedmods.refinedstorage.common.api.support.network.item.NetworkItemPlayerValidator;
 import com.refinedmods.refinedstorage.common.api.support.network.item.NetworkItemTargetBlockEntity;
 import com.refinedmods.refinedstorage.common.content.DataComponents;
@@ -170,14 +171,14 @@ public class HandlerWirelessGrid implements IContainerHandler {
     }
 
     private long getItemEnergyStored(ItemStack stack) {
-        return RefinedStorageApi.INSTANCE.getEnergyStorage(stack)
+        return RefinedStorageApi.INSTANCE.getEnergyStorage(stack, EnergyItemContext.READONLY)
             .map(energyStorage -> Math.max(0L, energyStorage.getStored()))
             .orElse(0L);
     }
 
     private void drainItemEnergy(ItemStack stack, long amount) {
         if (amount <= 0) return;
-        RefinedStorageApi.INSTANCE.getEnergyStorage(stack)
+        RefinedStorageApi.INSTANCE.getEnergyStorage(stack, EnergyItemContext.READONLY)
             .ifPresent(energyStorage -> energyStorage.extract(amount, Action.EXECUTE));
     }
 

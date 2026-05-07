@@ -87,7 +87,7 @@ public class HandlerPortableCell implements IContainerHandler {
 
                 double power = c.getAECurrentPower(cell);
                 if (power <= 0) {
-                    player.displayClientMessage(PlayerMessages.DeviceNotPowered.text(), true);
+                    player.sendOverlayMessage(PlayerMessages.DeviceNotPowered.text());
                     return null;
                 }
 

@@ -7,8 +7,10 @@ import dev.polaris_light.constructionwand.containers.handlers.HandlerBundle;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerCapability;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerDimensionsNet;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerNetTerminal;
+import dev.polaris_light.constructionwand.containers.handlers.HandlerPortableCell;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerShulkerbox;
 import dev.polaris_light.constructionwand.containers.handlers.HandlerWirelessGrid;
+import dev.polaris_light.constructionwand.containers.handlers.HandlerWirelessTerminal;
 
 
 public class ContainerRegistrar
@@ -25,11 +27,11 @@ public class ContainerRegistrar
         //     ConstructionWand.LOGGER.info("Botania integration added");
         // }
 
-        // if(ModList.get().isLoaded("ae2")) {
-        //     ConstructionWand.containerManager.register(new HandlerPortableCell());
-        //     ConstructionWand.containerManager.register(new HandlerWirelessTerminal());
-        //     ConstructionWand.LOGGER.info("Applied Energistics 2 integration added");
-        // }
+        if(ModList.get().isLoaded("ae2")) {
+            ConstructionWand.containerManager.register(new HandlerPortableCell());
+            ConstructionWand.containerManager.register(new HandlerWirelessTerminal());
+            ConstructionWand.LOGGER.info("Applied Energistics 2 integration added");
+        }
 
         if(ModList.get().isLoaded("toms_storage")) {
             ConstructionWand.containerManager.register(new HandlerAdvWirelessTerminal());
