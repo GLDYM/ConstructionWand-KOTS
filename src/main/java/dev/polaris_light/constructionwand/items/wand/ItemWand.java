@@ -11,10 +11,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -65,12 +69,28 @@ public abstract class ItemWand extends Item implements ICustomItemModel
         if(!ConstructionWand.undoHistory.isUndoActive(player)) {
             if(world.isClientSide) return InteractionResultHolder.fail(stack);
 
-            // Right click: Place angel block
-            WandJob job = getWandJob(player, world, BlockHitResult.miss(player.getLookAngle(),
-                    WandUtil.fromVector(player.getLookAngle()), player.blockPosition()), stack);
+            // Some moving-structure mods handle projected blocks through custom raycasts instead
+            // of vanilla block interaction. Try a direct raycast before falling back to angel mode.
+            BlockHitResult target = getPlayerTarget(world, player);
+            if(target == null) {
+                target = BlockHitResult.miss(player.getLookAngle(),
+                        WandUtil.fromVector(player.getLookAngle()), player.blockPosition());
+            }
+
+            WandJob job = getWandJob(player, world, target, stack);
             return job.doIt() ? InteractionResultHolder.success(stack) : InteractionResultHolder.fail(stack);
         }
         return InteractionResultHolder.fail(stack);
+    }
+
+    @Nullable
+    private static BlockHitResult getPlayerTarget(Level world, Player player) {
+        double range = player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE);
+        Vec3 start = player.getEyePosition();
+        Vec3 end = start.add(player.getLookAngle().scale(range));
+
+        BlockHitResult hit = world.clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+        return hit.getType() == HitResult.Type.BLOCK ? hit : null;
     }
 
     public static WandJob getWandJob(Player player, Level world, @Nullable BlockHitResult rayTraceResult, ItemStack wand) {

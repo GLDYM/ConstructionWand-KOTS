@@ -33,3 +33,10 @@ type = "optional"
 versionRange = "[0.7.0,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.constructionwand]]
+modId = "sable"
+type = "optional"
+versionRange = "[1.2.2,)"
+ordering = "AFTER"
+side = "BOTH"

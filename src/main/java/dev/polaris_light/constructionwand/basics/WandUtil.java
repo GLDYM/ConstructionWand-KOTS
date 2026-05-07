@@ -1,5 +1,6 @@
 package dev.polaris_light.constructionwand.basics;
 
+import dev.polaris_light.constructionwand.compat.CompatManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -223,7 +224,7 @@ public class WandUtil
 
         // Limit range
         if(ConfigServer.MAX_RANGE.get() > 0 &&
-                WandUtil.blockDistance(player.blockPosition(), pos) > ConfigServer.MAX_RANGE.get()) return false;
+                CompatManager.active().blockDistance(world, player, pos) > ConfigServer.MAX_RANGE.get()) return false;
 
         return true;
     }
