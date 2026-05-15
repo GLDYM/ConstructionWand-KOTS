@@ -12,9 +12,12 @@ import thetadev.constructionwand.items.ModItems;
 @Mod.EventBusSubscriber(modid = ConstructionWand.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup
 {
+    private static RenderBlockPreview renderBlockPreview;
+
     @SubscribeEvent
     public static void clientSetup(final FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.register(new RenderBlockPreview());
+        renderBlockPreview = new RenderBlockPreview();
+        MinecraftForge.EVENT_BUS.register(renderBlockPreview);
         MinecraftForge.EVENT_BUS.register(new KeybindHandler());
         event.enqueueWork(ModItems::registerModelProperties);
     }
