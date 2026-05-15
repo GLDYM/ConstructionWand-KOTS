@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 import thetadev.constructionwand.ConstructionWand;
+import thetadev.constructionwand.client.ClientSetup;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class PacketUndoBlocks
             if(!ctx.get().getDirection().getReceptionSide().isClient()) return;
 
             //ConstructionWand.LOGGER.debug("PacketUndoBlocks received, Blocks: " + msg.undoBlocks.size());
-            ConstructionWand.instance.renderBlockPreview.undoBlocks = msg.undoBlocks;
+            ClientSetup.renderBlockPreview.undoBlocks = msg.undoBlocks;
 
             ctx.get().setPacketHandled(true);
         }
