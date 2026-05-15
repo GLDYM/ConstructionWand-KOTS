@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 import thetadev.constructionwand.ConstructionWand;
+import thetadev.constructionwand.client.ClientSetup;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +39,7 @@ public class PacketPreviewResult {
     public static class Handler {
         public static void handle(final PacketPreviewResult msg, final Supplier<NetworkEvent.Context> ctx) {
             if (!ctx.get().getDirection().getReceptionSide().isClient()) return;
-            ConstructionWand.instance.renderBlockPreview.previewBlocks = msg.previewBlocks;
+            ClientSetup.renderBlockPreview.previewBlocks = msg.previewBlocks;
             ctx.get().setPacketHandled(true);
         }
     }
