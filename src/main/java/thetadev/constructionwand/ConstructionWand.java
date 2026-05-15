@@ -1,12 +1,9 @@
 package thetadev.constructionwand;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
@@ -16,9 +13,6 @@ import org.apache.logging.log4j.Logger;
 import thetadev.constructionwand.basics.ConfigClient;
 import thetadev.constructionwand.basics.ConfigServer;
 import thetadev.constructionwand.basics.ModStats;
-import thetadev.constructionwand.client.ClientEvents;
-import thetadev.constructionwand.client.KeybindHandler;
-import thetadev.constructionwand.client.RenderBlockPreview;
 import thetadev.constructionwand.containers.ContainerManager;
 import thetadev.constructionwand.containers.ContainerRegistrar;
 import thetadev.constructionwand.items.ModItems;
@@ -43,7 +37,6 @@ public class ConstructionWand
 
     public ContainerManager containerManager;
     public UndoHistory undoHistory;
-    public RenderBlockPreview renderBlockPreview;
 
     public ConstructionWand(FMLJavaModLoadingContext context) {
         instance = this;
@@ -53,8 +46,6 @@ public class ConstructionWand
 
         // Register setup methods for modloading
         context.getModEventBus().addListener(this::commonSetup);
-        context.getModEventBus().addListener(this::clientSetup);
-        context.getModEventBus().addListener(this::registerKeymapping);
         MinecraftForge.EVENT_BUS.register(this);
 
         // Register Item DeferredRegister
@@ -83,17 +74,6 @@ public class ConstructionWand
         // Stats
         ModStats.register();
     }
-
-    private void clientSetup(final FMLClientSetupEvent event) {
-        renderBlockPreview = new RenderBlockPreview();
-        MinecraftForge.EVENT_BUS.register(renderBlockPreview);
-        MinecraftForge.EVENT_BUS.register(new KeybindHandler());
-        event.enqueueWork(ModItems::registerModelProperties);
-    }
-
-	private void registerKeymapping(final RegisterKeyMappingsEvent event) {
-		event.register(KeybindHandler.KEY_OPT);
-	}
 
     public static ResourceLocation loc(String name) {
         return ResourceLocation.fromNamespaceAndPath(MODID, name);
