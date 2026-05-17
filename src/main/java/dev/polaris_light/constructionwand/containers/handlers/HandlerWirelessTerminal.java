@@ -89,7 +89,11 @@ public class HandlerWirelessTerminal implements IContainerHandler {
                     MenuLocators.forStack(terminal),
                     null
                 );
-            
+
+                // Some AE2-compatible terminals, such as AE2WTLib quantum-linked terminals,
+                // populate their actionable node lazily when their inventory is queried.
+                host.getInventory();
+
                 if (host.getActionableNode() == null) {
                     player.displayClientMessage(PlayerMessages.OutOfRange.text(), true);
                     return null;
