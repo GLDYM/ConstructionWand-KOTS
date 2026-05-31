@@ -85,6 +85,7 @@ dependencies {
 
     compileOnly "curse.maven:beyond-dimensions-1222890:${beyond_dimensions_fileid}"
     // localRuntime "curse.maven:beyond-dimensions-1222890:${beyond_dimensions_fileid}"
+    compileOnly "curse.maven:occultism-361026:8160066"
 }
 
 tasks.named('processResources', ProcessResources).configure {
