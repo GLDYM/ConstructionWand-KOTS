@@ -84,19 +84,18 @@ dependencies {
     compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
     localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
 
-    compileOnly "vazkii.botania:botania-neoforge-1.21.1:${botania_version}"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+    runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    compileOnly "dev.ryanhcode.sable:sable-neoforge-1.21.1:1.2.2"
 
+    compileOnly "vazkii.botania:botania-neoforge-1.21.1:${botania_version}"
     compileOnly "curse.maven:l2-backpack-620229:${l2backpack_fileid}"
     compileOnly "curse.maven:l2library-620203:${l2library_fileid}"
-    implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
     compileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}"
     compileOnly "curse.maven:toms-storage-378609:${tomsstorage_fileid}"
-
     compileOnly "curse.maven:refined-storage-243076:${refined_storage_fileid}"
-
     compileOnly "curse.maven:beyond-dimensions-1222890:${beyond_dimensions_fileid}"
-
-    compileOnly "dev.ryanhcode.sable:sable-neoforge-1.21.1:1.2.2"
+    compileOnly "curse.maven:occultism-361026:7336033"
 }
 
 tasks.named('processResources', ProcessResources).configure {
