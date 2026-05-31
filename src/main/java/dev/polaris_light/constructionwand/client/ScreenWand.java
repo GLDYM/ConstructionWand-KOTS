@@ -10,9 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
-import javax.annotation.Nonnull;
-
-import dev.polaris_light.constructionwand.ConstructionWand;
 import dev.polaris_light.constructionwand.basics.option.IOption;
 import dev.polaris_light.constructionwand.basics.option.WandOptions;
 import dev.polaris_light.constructionwand.network.PacketWandOption;
