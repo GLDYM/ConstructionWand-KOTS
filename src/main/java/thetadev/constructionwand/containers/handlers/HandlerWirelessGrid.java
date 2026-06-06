@@ -56,9 +56,10 @@ public class HandlerWirelessGrid implements IContainerHandler {
         INetwork network = resolveNetwork(player, inventoryStack);
         if (network == null) return 0;
 
+        boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack);
         int extractCost = RS.SERVER_CONFIG.getWirelessGrid().getExtractUsage();
         int maxByEnergy;
-        if (hasInfiniteEnergy(inventoryStack)) {
+        if (infiniteEnergy) {
             maxByEnergy = Integer.MAX_VALUE;
         } else {
             IEnergyStorage energy = inventoryStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
@@ -67,7 +68,7 @@ public class HandlerWirelessGrid implements IContainerHandler {
             maxByEnergy = energyStored / extractCost;
         }
 
-        if (maxByEnergy <= 0) {
+        if (!infiniteEnergy && maxByEnergy <= 0) {
             player.displayClientMessage(Component.translatable("misc.refinedstorage.wireless_grid.out_of_energy"), true);
             return 0;
         }
@@ -84,10 +85,11 @@ public class HandlerWirelessGrid implements IContainerHandler {
             return count;
         }
 
+        boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack);
         int extractCost = RS.SERVER_CONFIG.getWirelessGrid().getExtractUsage();
         IEnergyStorage energy = null;
         int maxByEnergy;
-        if (hasInfiniteEnergy(inventoryStack)) {
+        if (infiniteEnergy) {
             maxByEnergy = Integer.MAX_VALUE;
         } else {
             energy = inventoryStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
@@ -96,7 +98,7 @@ public class HandlerWirelessGrid implements IContainerHandler {
             maxByEnergy = energyStored / extractCost;
         }
 
-        if (maxByEnergy <= 0) {
+        if (!infiniteEnergy && maxByEnergy <= 0) {
             player.displayClientMessage(Component.translatable("misc.refinedstorage.wireless_grid.out_of_energy"), true);
             return count;
         }
