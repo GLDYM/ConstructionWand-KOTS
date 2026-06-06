@@ -17,14 +17,13 @@ import thetadev.constructionwand.api.IContainerHandler;
 import thetadev.constructionwand.containers.ContainerTrace;
 
 import com.refinedmods.refinedstorage.api.network.INetwork;
-import com.refinedmods.refinedstorage.api.network.item.INetworkItemManager;
 import com.refinedmods.refinedstorage.api.network.node.INetworkNode;
 import com.refinedmods.refinedstorage.api.network.node.INetworkNodeProxy;
 import com.refinedmods.refinedstorage.api.util.Action;
 import com.refinedmods.refinedstorage.inventory.player.PlayerSlot;
-import com.refinedmods.refinedstorage.item.NetworkItem;
-import com.refinedmods.refinedstorage.item.EnergyItem;
 import com.refinedmods.refinedstorage.RS;
+import com.refinedmods.refinedstorage.item.NetworkItem;
+import com.refinedmods.refinedstorage.item.WirelessGridItem;
 
 public class HandlerWirelessGrid implements IContainerHandler {
 
@@ -58,11 +57,16 @@ public class HandlerWirelessGrid implements IContainerHandler {
         if (network == null) return 0;
 
         int extractCost = RS.SERVER_CONFIG.getWirelessGrid().getExtractUsage();
-        IEnergyStorage energy = inventoryStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
-        if (energy == null) return 0;
-        int energyStored = energy.getEnergyStored();
+        int maxByEnergy;
+        if (hasInfiniteEnergy(inventoryStack)) {
+            maxByEnergy = Integer.MAX_VALUE;
+        } else {
+            IEnergyStorage energy = inventoryStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
+            if (energy == null) return 0;
+            int energyStored = energy.getEnergyStored();
+            maxByEnergy = energyStored / extractCost;
+        }
 
-        int maxByEnergy = energyStored / extractCost;
         if (maxByEnergy <= 0) {
             player.displayClientMessage(Component.translatable("misc.refinedstorage.wireless_grid.out_of_energy"), true);
             return 0;
@@ -81,11 +85,17 @@ public class HandlerWirelessGrid implements IContainerHandler {
         }
 
         int extractCost = RS.SERVER_CONFIG.getWirelessGrid().getExtractUsage();
-        IEnergyStorage energy = inventoryStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
-        if (energy == null) return count;
-        int energyStored = energy.getEnergyStored();
+        IEnergyStorage energy = null;
+        int maxByEnergy;
+        if (hasInfiniteEnergy(inventoryStack)) {
+            maxByEnergy = Integer.MAX_VALUE;
+        } else {
+            energy = inventoryStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
+            if (energy == null) return count;
+            int energyStored = energy.getEnergyStored();
+            maxByEnergy = energyStored / extractCost;
+        }
 
-        int maxByEnergy = energyStored / extractCost;
         if (maxByEnergy <= 0) {
             player.displayClientMessage(Component.translatable("misc.refinedstorage.wireless_grid.out_of_energy"), true);
             return count;
@@ -103,8 +113,15 @@ public class HandlerWirelessGrid implements IContainerHandler {
         ItemStack extracted = network.extractItem(itemStack, canExtract, Action.PERFORM);
         int actuallyExtracted = extracted.isEmpty() ? 0 : extracted.getCount();
 
-        energy.extractEnergy(actuallyExtracted * extractCost, false);
+        if (energy != null) {
+            energy.extractEnergy(actuallyExtracted * extractCost, false);
+        }
         return count - actuallyExtracted;
+    }
+
+    private boolean hasInfiniteEnergy(ItemStack stack) {
+        return stack.getItem() instanceof WirelessGridItem wirelessGrid
+            && wirelessGrid.getType() == WirelessGridItem.Type.CREATIVE;
     }
 
     private INetwork resolveNetwork(Player player, ItemStack stack) {
