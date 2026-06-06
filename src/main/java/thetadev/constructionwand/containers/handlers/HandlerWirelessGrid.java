@@ -23,7 +23,6 @@ import com.refinedmods.refinedstorage.api.network.node.INetworkNodeProxy;
 import com.refinedmods.refinedstorage.api.util.Action;
 import com.refinedmods.refinedstorage.inventory.player.PlayerSlot;
 import com.refinedmods.refinedstorage.item.NetworkItem;
-import com.refinedmods.refinedstorage.item.WirelessGridItem;
 import com.refinedmods.refinedstorage.item.EnergyItem;
 import com.refinedmods.refinedstorage.RS;
 
@@ -31,7 +30,7 @@ public class HandlerWirelessGrid implements IContainerHandler {
 
     @Override
     public boolean matches(Player player, ItemStack inventoryStack) {
-        return inventoryStack.getItem() instanceof WirelessGridItem;
+        return inventoryStack.getItem() instanceof NetworkItem;
     }
 
     @Override
