@@ -87,10 +87,11 @@ public class HandlerWirelessGrid implements IContainerHandler {
 
         boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack);
         int extractCost = RS.SERVER_CONFIG.getWirelessGrid().getExtractUsage();
-        IEnergyStorage energy = null;
+        IEnergyStorage energy;
         int maxByEnergy;
         if (infiniteEnergy) {
             maxByEnergy = Integer.MAX_VALUE;
+            energy = null;
         } else {
             energy = inventoryStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
             if (energy == null) return count;
@@ -115,7 +116,7 @@ public class HandlerWirelessGrid implements IContainerHandler {
         ItemStack extracted = network.extractItem(itemStack, canExtract, Action.PERFORM);
         int actuallyExtracted = extracted.isEmpty() ? 0 : extracted.getCount();
 
-        if (energy != null) {
+        if (!infiniteEnergy) {
             energy.extractEnergy(actuallyExtracted * extractCost, false);
         }
         return count - actuallyExtracted;
