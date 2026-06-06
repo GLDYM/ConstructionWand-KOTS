@@ -57,7 +57,7 @@ public class HandlerWirelessGrid implements IContainerHandler {
         if (network == null) return 0;
 
         int extractCost = RS.SERVER_CONFIG.getWirelessGrid().getExtractUsage();
-        boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack) || extractCost <= 0;
+        boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack, extractCost);
         int maxByEnergy;
         if (infiniteEnergy) {
             maxByEnergy = Integer.MAX_VALUE;
@@ -86,14 +86,12 @@ public class HandlerWirelessGrid implements IContainerHandler {
         }
 
         int extractCost = RS.SERVER_CONFIG.getWirelessGrid().getExtractUsage();
-        boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack) || extractCost <= 0;
-        IEnergyStorage energy;
+        boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack, extractCost);
+        IEnergyStorage energy = inventoryStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
         int maxByEnergy;
         if (infiniteEnergy) {
             maxByEnergy = Integer.MAX_VALUE;
-            energy = null;
         } else {
-            energy = inventoryStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
             if (energy == null) return count;
             int energyStored = energy.getEnergyStored();
             maxByEnergy = energyStored / extractCost;
@@ -116,14 +114,15 @@ public class HandlerWirelessGrid implements IContainerHandler {
         ItemStack extracted = network.extractItem(itemStack, canExtract, Action.PERFORM);
         int actuallyExtracted = extracted.isEmpty() ? 0 : extracted.getCount();
 
-        if (!infiniteEnergy) {
+        if (energy != null) {
             energy.extractEnergy(actuallyExtracted * extractCost, false);
         }
         return count - actuallyExtracted;
     }
 
-    private boolean hasInfiniteEnergy(ItemStack stack) {
-        return !RS.SERVER_CONFIG.getWirelessGrid().getUseEnergy()
+    private boolean hasInfiniteEnergy(ItemStack stack, int extractCost) {
+        return extractCost <= 0
+            || !RS.SERVER_CONFIG.getWirelessGrid().getUseEnergy()
             || stack.getItem() instanceof WirelessGridItem wirelessGrid
                 && wirelessGrid.getType() == WirelessGridItem.Type.CREATIVE;
     }
