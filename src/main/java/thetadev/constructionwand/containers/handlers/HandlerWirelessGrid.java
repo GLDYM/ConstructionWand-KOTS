@@ -135,20 +135,13 @@ public class HandlerWirelessGrid implements IContainerHandler {
     private boolean isRSAddonsInfiniteEnergy(ItemStack stack) {
         if (!ModList.get().isLoaded("refinedstorageaddons")) return false;
         Item stackItem = stack.getItem();
-        if (!isRSAddonsWirelessCraftingGridItem(stackItem)) return false;
+        if (!(stackItem instanceof WirelessCraftingGridItem wirelessCraftingGridItem)) return false;
 
         return !isRSAddonsWirelessCraftingUseEnergy()
-            || isRSAddonsCreativeWirelessCraftingGrid(stackItem);
+            || isRSAddonsCreativeWirelessCraftingGrid(wirelessCraftingGridItem);
     }
 
-    private boolean isRSAddonsWirelessCraftingGridItem(Item stackItem) {
-        return stackItem instanceof WirelessCraftingGridItem;
-    }
-
-    private boolean isRSAddonsCreativeWirelessCraftingGrid(Item stackItem) {
-        if (!(stackItem instanceof WirelessCraftingGridItem wirelessCraftingGridItem)) {
-            return false;
-        }
+    private boolean isRSAddonsCreativeWirelessCraftingGrid(WirelessCraftingGridItem wirelessCraftingGridItem) {
         return wirelessCraftingGridItem.getType() == WirelessCraftingGridItem.Type.CREATIVE;
     }
 
