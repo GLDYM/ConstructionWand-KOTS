@@ -56,8 +56,8 @@ public class HandlerWirelessGrid implements IContainerHandler {
         INetwork network = resolveNetwork(player, inventoryStack);
         if (network == null) return 0;
 
-        boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack);
         int extractCost = RS.SERVER_CONFIG.getWirelessGrid().getExtractUsage();
+        boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack) || extractCost <= 0;
         int maxByEnergy;
         if (infiniteEnergy) {
             maxByEnergy = Integer.MAX_VALUE;
@@ -85,8 +85,8 @@ public class HandlerWirelessGrid implements IContainerHandler {
             return count;
         }
 
-        boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack);
         int extractCost = RS.SERVER_CONFIG.getWirelessGrid().getExtractUsage();
+        boolean infiniteEnergy = hasInfiniteEnergy(inventoryStack) || extractCost <= 0;
         IEnergyStorage energy;
         int maxByEnergy;
         if (infiniteEnergy) {
@@ -123,8 +123,9 @@ public class HandlerWirelessGrid implements IContainerHandler {
     }
 
     private boolean hasInfiniteEnergy(ItemStack stack) {
-        return stack.getItem() instanceof WirelessGridItem wirelessGrid
-            && wirelessGrid.getType() == WirelessGridItem.Type.CREATIVE;
+        return !RS.SERVER_CONFIG.getWirelessGrid().getUseEnergy()
+            || stack.getItem() instanceof WirelessGridItem wirelessGrid
+                && wirelessGrid.getType() == WirelessGridItem.Type.CREATIVE;
     }
 
     private INetwork resolveNetwork(Player player, ItemStack stack) {
