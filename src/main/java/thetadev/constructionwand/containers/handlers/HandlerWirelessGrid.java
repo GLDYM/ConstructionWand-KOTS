@@ -24,6 +24,7 @@ import com.refinedmods.refinedstorage.inventory.player.PlayerSlot;
 import com.refinedmods.refinedstorage.RS;
 import com.refinedmods.refinedstorage.item.NetworkItem;
 import com.refinedmods.refinedstorage.item.WirelessGridItem;
+import net.minecraftforge.fml.ModList;
 
 public class HandlerWirelessGrid implements IContainerHandler {
 
@@ -123,8 +124,43 @@ public class HandlerWirelessGrid implements IContainerHandler {
     private boolean hasInfiniteEnergy(ItemStack stack, int extractCost) {
         return extractCost <= 0
             || !RS.SERVER_CONFIG.getWirelessGrid().getUseEnergy()
+            || isRSAddonsInfiniteEnergy(stack)
             || stack.getItem() instanceof WirelessGridItem wirelessGrid
                 && wirelessGrid.getType() == WirelessGridItem.Type.CREATIVE;
+    }
+
+    private boolean isRSAddonsInfiniteEnergy(ItemStack stack) {
+        if (!ModList.get().isLoaded("refinedstorageaddons")) return false;
+
+        return !isRSAddonsWirelessCraftingUseEnergy()
+            || isRSAddonsCreativeWirelessCraftingGrid(stack);
+    }
+
+    private boolean isRSAddonsCreativeWirelessCraftingGrid(ItemStack stack) {
+        Object item = stack.getItem();
+        if (!"com.refinedmods.refinedstorageaddons.item.WirelessCraftingGridItem"
+            .equals(item.getClass().getName())) {
+            return false;
+        }
+
+        try {
+            Object type = item.getClass().getMethod("getType").invoke(item);
+            return type != null && "CREATIVE".equals(type.toString());
+        } catch (ReflectiveOperationException e) {
+            return false;
+        }
+    }
+
+    private boolean isRSAddonsWirelessCraftingUseEnergy() {
+        try {
+            Class<?> rsAddonsClass = Class.forName("com.refinedmods.refinedstorageaddons.RSAddons");
+            Object serverConfig = rsAddonsClass.getField("SERVER_CONFIG").get(null);
+            Object wirelessCraftingGrid = serverConfig.getClass().getMethod("getWirelessCraftingGrid").invoke(serverConfig);
+            Object useEnergy = wirelessCraftingGrid.getClass().getMethod("getUseEnergy").invoke(wirelessCraftingGrid);
+            return useEnergy instanceof Boolean b && b;
+        } catch (ReflectiveOperationException e) {
+            return true;
+        }
     }
 
     private INetwork resolveNetwork(Player player, ItemStack stack) {
