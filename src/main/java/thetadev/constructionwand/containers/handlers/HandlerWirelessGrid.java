@@ -125,26 +125,27 @@ public class HandlerWirelessGrid implements IContainerHandler {
         return extractCost <= 0
             || !RS.SERVER_CONFIG.getWirelessGrid().getUseEnergy()
             || isRSAddonsInfiniteEnergy(stack)
-            || stack.getItem() instanceof WirelessGridItem wirelessGrid
-                && wirelessGrid.getType() == WirelessGridItem.Type.CREATIVE;
+            || (stack.getItem() instanceof WirelessGridItem wirelessGrid
+                && wirelessGrid.getType() == WirelessGridItem.Type.CREATIVE);
     }
 
     private boolean isRSAddonsInfiniteEnergy(ItemStack stack) {
         if (!ModList.get().isLoaded("refinedstorageaddons")) return false;
+        Object stackItem = stack.getItem();
+        if (!isRSAddonsWirelessCraftingGridItem(stackItem)) return false;
 
         return !isRSAddonsWirelessCraftingUseEnergy()
-            || isRSAddonsCreativeWirelessCraftingGrid(stack);
+            || isRSAddonsCreativeWirelessCraftingGrid(stackItem);
     }
 
-    private boolean isRSAddonsCreativeWirelessCraftingGrid(ItemStack stack) {
-        Object item = stack.getItem();
-        if (!"com.refinedmods.refinedstorageaddons.item.WirelessCraftingGridItem"
-            .equals(item.getClass().getName())) {
-            return false;
-        }
+    private boolean isRSAddonsWirelessCraftingGridItem(Object stackItem) {
+        return "com.refinedmods.refinedstorageaddons.item.WirelessCraftingGridItem"
+            .equals(stackItem.getClass().getName());
+    }
 
+    private boolean isRSAddonsCreativeWirelessCraftingGrid(Object stackItem) {
         try {
-            Object type = item.getClass().getMethod("getType").invoke(item);
+            Object type = stackItem.getClass().getMethod("getType").invoke(stackItem);
             return type != null && "CREATIVE".equals(type.toString());
         } catch (ReflectiveOperationException e) {
             return false;
