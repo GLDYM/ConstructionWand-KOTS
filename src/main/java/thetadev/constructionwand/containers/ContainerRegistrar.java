@@ -11,6 +11,7 @@ import thetadev.constructionwand.containers.handlers.HandlerLightland;
 import thetadev.constructionwand.containers.handlers.HandlerNetTerminal;
 import thetadev.constructionwand.containers.handlers.HandlerPortableCell;
 import thetadev.constructionwand.containers.handlers.HandlerShulkerbox;
+import thetadev.constructionwand.containers.handlers.HandlerWirelessCraftingGrid;
 import thetadev.constructionwand.containers.handlers.HandlerWirelessGrid;
 import thetadev.constructionwand.containers.handlers.HandlerWirelessTerminal;
 
@@ -49,6 +50,10 @@ public class ContainerRegistrar
         }
 
         if(ModList.get().isLoaded("refinedstorage")) {
+            if(ModList.get().isLoaded("refinedstorageaddons")) {
+                ConstructionWand.instance.containerManager.register(new HandlerWirelessCraftingGrid());
+                ConstructionWand.LOGGER.info("Refined Storage Addons integration added");
+            }
             ConstructionWand.instance.containerManager.register(new HandlerWirelessGrid());
             ConstructionWand.LOGGER.info("Refined Storage integration added");
         }
