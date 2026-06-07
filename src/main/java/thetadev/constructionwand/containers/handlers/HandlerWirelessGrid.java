@@ -24,10 +24,6 @@ import com.refinedmods.refinedstorage.inventory.player.PlayerSlot;
 import com.refinedmods.refinedstorage.RS;
 import com.refinedmods.refinedstorage.item.NetworkItem;
 import com.refinedmods.refinedstorage.item.WirelessGridItem;
-import com.refinedmods.refinedstorageaddons.RSAddons;
-import com.refinedmods.refinedstorageaddons.item.WirelessCraftingGridItem;
-import net.minecraftforge.fml.ModList;
-import net.minecraft.world.item.Item;
 
 public class HandlerWirelessGrid implements IContainerHandler {
 
@@ -124,29 +120,11 @@ public class HandlerWirelessGrid implements IContainerHandler {
         return count - actuallyExtracted;
     }
 
-    private boolean hasInfiniteEnergy(ItemStack stack, int extractCost) {
+    protected boolean hasInfiniteEnergy(ItemStack stack, int extractCost) {
         return extractCost <= 0
             || !RS.SERVER_CONFIG.getWirelessGrid().getUseEnergy()
-            || isRSAddonsInfiniteEnergy(stack)
             || (stack.getItem() instanceof WirelessGridItem wirelessGrid
                 && wirelessGrid.getType() == WirelessGridItem.Type.CREATIVE);
-    }
-
-    private boolean isRSAddonsInfiniteEnergy(ItemStack stack) {
-        if (!ModList.get().isLoaded("refinedstorageaddons")) return false;
-        Item stackItem = stack.getItem();
-        if (!(stackItem instanceof WirelessCraftingGridItem wirelessCraftingGridItem)) return false;
-
-        return !isRSAddonsWirelessCraftingUseEnergy()
-            || isRSAddonsCreativeWirelessCraftingGrid(wirelessCraftingGridItem);
-    }
-
-    private boolean isRSAddonsCreativeWirelessCraftingGrid(WirelessCraftingGridItem wirelessCraftingGridItem) {
-        return wirelessCraftingGridItem.getType() == WirelessCraftingGridItem.Type.CREATIVE;
-    }
-
-    private boolean isRSAddonsWirelessCraftingUseEnergy() {
-        return RSAddons.SERVER_CONFIG.getWirelessCraftingGrid().getUseEnergy();
     }
 
     private INetwork resolveNetwork(Player player, ItemStack stack) {
