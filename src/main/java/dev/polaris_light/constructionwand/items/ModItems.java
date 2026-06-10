@@ -21,7 +21,7 @@ import dev.polaris_light.constructionwand.items.wand.ItemWand;
 import dev.polaris_light.constructionwand.items.wand.ItemWandBasic;
 import dev.polaris_light.constructionwand.items.wand.ItemWandInfinity;
 
-@EventBusSubscriber(modid = ConstructionWand.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = ConstructionWand.MODID)
 public class ModItems
 {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, ConstructionWand.MODID);

@@ -6,11 +6,12 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import dev.polaris_light.constructionwand.ConstructionWand;
 
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = ConstructionWand.MODID)
 public class ModData
 {
     @SubscribeEvent
