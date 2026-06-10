@@ -9,6 +9,7 @@ displayName = "${mod_name}"
 displayURL = "https://github.com/GLDYM/ConstructionWand-KOTS"
 logoFile = "icon.png"
 authors = "${mod_authors}"
+credits="ThetaDev for creating Construction Wand"
 description = '''
 ${mod_description}
 '''
