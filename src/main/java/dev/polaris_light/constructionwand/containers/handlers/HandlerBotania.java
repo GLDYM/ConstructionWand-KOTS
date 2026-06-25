@@ -66,6 +66,10 @@ public class HandlerBotania implements IContainerHandler
                     continue;
                 }
 
+                if (!method.getParameterTypes()[0].isInstance(lookup)) {
+                    continue;
+                }
+
                 Object capability = method.invoke(null, lookup);
                 if (capability instanceof ItemCapability<?, ?> itemCapability) {
                     return inventoryStack.getCapability((ItemCapability<BlockProvider, Void>) itemCapability);
