@@ -43,14 +43,14 @@ public class HandlerWirelessTerminal implements IContainerHandler {
             AEItemKey key = AEItemKey.of(target);
             if (key == null) return 0;
 
-            long amount = 0;
-            for (var entry : storage.getAvailableStacks()) {
-                if (entry.getKey().equals(key)) {
-                    amount = entry.getLongValue();
-                    break;
-                }
-            }
-            return amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
+            // Avoid enumerating every key in the network just to find one item.
+            long amount = storage.extract(
+                key,
+                Integer.MAX_VALUE,
+                Actionable.SIMULATE,
+                IActionSource.ofPlayer(serverPlayer)
+            );
+            return (int) amount;
         }
         return 0;
     }
