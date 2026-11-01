@@ -50,7 +50,7 @@ public class HandlerWirelessTerminal implements IContainerHandler {
                 Actionable.SIMULATE,
                 IActionSource.ofPlayer(serverPlayer)
             );
-            return (int) amount;
+            return amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
         }
         return 0;
     }
